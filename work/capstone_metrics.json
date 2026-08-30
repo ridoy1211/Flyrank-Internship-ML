@@ -1,0 +1,7 @@
+{
+  "n_rows": 123683,
+  "base_rate": 0.0310631552601574,
+  "baseline_precision_50": 0.0,
+  "model_precision_50": 0.1,
+  "model_roc_auc": 0.8097040395735562
+}
