@@ -3,7 +3,7 @@
 - **Author:** Ridoy Hasan
 - **Lane:** Ranking Signal Analysis — Great Decoupling exposure detection
 - **Repo:** https://github.com/ridoy1211/Flyrank-Internship-ML
-- **Date:** 2026
+- **Date:** Aug 31, 2026
 
 ## 0. Abstract
 
