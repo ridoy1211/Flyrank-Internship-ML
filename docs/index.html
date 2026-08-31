@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Great Decoupling: Detecting Silent Click Loss in Search Content</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 780px; margin: 0 auto; padding: 40px 20px 80px; color: #1a1a1a; line-height: 1.65; }
+  h1 { font-size: 2rem; line-height: 1.3; margin-bottom: 0.2em; }
+  .byline { color: #666; font-style: italic; margin-bottom: 2.5em; }
+  h2 { font-size: 1.4rem; margin-top: 2.5em; border-bottom: 2px solid #2E4057; padding-bottom: 0.3em; }
+  .abstract { background: #f7f7f5; padding: 1.5em 1.8em; border-left: 4px solid #2E4057; margin-bottom: 2em; }
+  table { border-collapse: collapse; width: 100%; margin: 1.5em 0; font-family: -apple-system, sans-serif; font-size: 0.95rem; }
+  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+  th { background: #2E4057; color: white; }
+  img { max-width: 100%; border: 1px solid #ddd; margin: 1.5em 0; }
+  code { background: #f0f0f0; padding: 2px 5px; font-size: 0.9em; }
+  ul { padding-left: 1.4em; }
+  .ack { margin-top: 3em; padding-top: 1.5em; border-top: 1px solid #ccc; font-size: 0.95rem; color: #444; }
+  a { color: #2E4057; }
+</style>
+</head>
+<body>
+
+<h1>The Great Decoupling: Detecting Silent Click Loss in Search Content</h1>
+<p class="byline">Ridoy Hasan &middot; FlyRank ML Engineering Internship &middot; Capstone, 2026</p>
+
+<div class="abstract">
+<strong>Abstract.</strong> FlyRank's content strategists manage search performance for dozens of
+client portfolios, and face a real, growing blind spot: since AI Overviews became standard in
+Google Search, a page can hold steady impressions and ranking while its actual clicks quietly
+disappear — a pattern with no name or detection method in FlyRank's existing tooling. This
+project asks whether that pattern, which industry research calls the "Great Decoupling," can be
+identified early enough from observable search signals for a strategist to act on. Using 123,683
+real content pages from FlyRank's 79-million-row production search warehouse, we built a
+transparent baseline rule and a Random Forest classifier trained only on February 2026 signals,
+validated against March 2026 outcomes on a client-grouped holdout split. The baseline rule failed
+to beat random selection on this split (precision@50 of 0.00), while the Random Forest achieved a
+2.58x lift over the base rate (precision@50 of 0.08, ROC AUC 0.81) — evidence the added
+complexity earned its place. The result is a ranked, human-reviewed action playbook intended to
+help FlyRank's content strategists triage which client pages need review first, before the click
+loss becomes visible in standard reporting.
+</div>
+
+<h2>Introduction</h2>
+<p>FlyRank manages content performance across dozens of client sites, and its strategists rely on
+standard dashboards — impressions, average position, sessions — to decide where to spend limited
+review time each week. That approach has a specific, current weakness: published industry
+research (Ahrefs, Pew Research, 2026) shows AI Overviews correlate with meaningfully lower
+click-through rates even when a page's impressions and ranking positions hold steady — a page can
+look completely healthy on the metrics FlyRank's team already watches, while its actual value to
+the client quietly erodes. This is not a hypothetical concern raised for this project; it's the
+real motivation this lane was chosen for in Week 1 of this internship, after confirming the
+pattern already appears in FlyRank's own starter data. This paper asks a narrow, concrete version
+of that problem: given only what was knowable about a page in a given month, can a model flag it
+as being at risk of this pattern before a strategist would otherwise notice — and does that model
+actually outperform a simple, transparent rule a human could apply by hand?</p>
+
+<h2>Data</h2>
+<p><strong>Release:</strong> FlyRank/internship-warehouse (Hugging Face, gated), build
+<code>flyrank_pseudonymized_warehouse_release_v20260703</code>.</p>
+<p><strong>Tables used:</strong> <code>fact_content_daily_performance</code> (February and March
+2026 partitions) and <code>dim_content</code> (content_type, main_intent, content_updated_date —
+static metadata only).</p>
+<p><strong>Date windows:</strong> February 1&ndash;28, 2026 (features) and March 1&ndash;31, 2026
+(outcome). Both mid-panel months — never the sealed final month (June 2026), which is reserved by
+the program as a held-out test month.</p>
+<p><strong>Deliberately excluded:</strong></p>
+<ul>
+<li><code>fact_content_query_90d</code> — its window overlaps recent months, a documented
+leakage risk.</li>
+<li>GA4 columns — not needed for a GSC-only signal.</li>
+<li>Any FlyRank product decision flags (health_score, priority_score, etc.) — not shipped in
+this dataset by design.</li>
+</ul>
+<p><strong>Public-safety:</strong> all identifiers are pseudonymized hashes; no raw client names,
+domains, or search queries appear anywhere in this analysis.</p>
+
+<h2>Methodology</h2>
+<p><strong>Label:</strong> <code>decoupling_signature</code> = 1 if impressions changed between
+&minus;10% and +10% (Feb&rarr;March) AND clicks dropped 15% or more over the same comparison. A
+defined-rule proxy, not an observed business outcome — disclosed as such throughout this
+project.</p>
+<p><strong>Features (February/prior-window only, nothing from March):</strong>
+impressions_prior30, clicks_prior30, ctr_prior30, avg_position_prior30, content_type,
+main_intent.</p>
+<p><strong>Baseline:</strong> a transparent, hand-written rule — score = visible &times;
+ctr_gap_prior30, where ctr_gap_prior30 compares each page's CTR to the median CTR for its own
+position bucket. No fitted weights.</p>
+<p><strong>Model:</strong> Random Forest Classifier (300 trees), chosen after Logistic Regression
+as a readable first pass — picked because the question is a yes/no observed label, with
+complexity added only after it earned its place.</p>
+<p><strong>Validation design:</strong> GroupShuffleSplit grouped by client_hash_id (25% test), so
+no client appears in both train and test — protects against the model memorizing client-specific
+patterns rather than learning something generalizable.</p>
+<p><strong>Leakage checks performed:</strong> (1) a feature-name audit against outcome-window and
+label terms; (2) a deliberate re-add of a label-derived column to confirm the audit harness
+actually detects leakage when present; (3) a random-vs-grouped split comparison to check for a
+client-memorization gap; (4) a candidate freshness feature (content_updated_date) was tested and
+dropped after discovering its values fell mostly <em>after</em> the decision point (median
+&minus;50 days relative to the window close) — a genuine future-leakage risk caught before it
+reached the model, not assumed away.</p>
+
+<h2>Results</h2>
+<p>Evaluated on an identical held-out test split (25% of clients, grouped so no client appears in
+both train and test), same metric, same label.</p>
+<table>
+<tr><th>Method</th><th>Precision@50</th><th>ROC AUC</th><th>Lift vs. base rate</th></tr>
+<tr><td>Baseline rule</td><td>0.00</td><td>0.493</td><td>0.0x</td></tr>
+<tr><td>Random Forest</td><td>0.08</td><td>0.806</td><td>2.58x</td></tr>
+</table>
+<p>Base rate (test set): 3.11%.</p>
+<img src="img/model_vs_baseline.png" alt="Bar chart comparing baseline rule and Random Forest precision at 50, with base rate marked">
+<p>The transparent baseline rule caught none of its top 50 flagged pages on this held-out split
+— performing at or below chance here. The Random Forest meaningfully outperformed both the
+baseline and random selection, correctly prioritizing roughly 4 of its top 50 picks versus the
+~1.6 expected by chance at this base rate. This is the clearest evidence in this project that the
+added model complexity earned its place, on this lane's data.</p>
+
+<h2>Limitations &amp; Honest Framing</h2>
+<ul>
+<li>The label is a defined-rule proxy (Feb-vs-March comparison), not a confirmed AI-Overview
+cause — this ranks a pattern, it does not diagnose why it happened.</li>
+<li>Single lane: GSC signals only. No content-quality, backlink, or competitor signals.</li>
+<li><code>content_updated_date</code> could not be used as a leak-free freshness feature: values
+ranged from &minus;97 to 303 days relative to the March 31 decision point (median &minus;50),
+meaning most recorded update dates fall after the observation window. This feature was dropped
+from the ranking rather than reported as a finding.</li>
+<li>Evaluated on one client-grouped split, one month pair (Feb&rarr;March 2026) — not yet tested
+against a different season or a newly onboarded client.</li>
+</ul>
+
+<h2>Ranked Recommendations</h2>
+<p>Three archetypes, combining the model's risk score with a simple visibility check, each
+mapped to one action:</p>
+<table>
+<tr><th>Archetype</th><th>Count</th><th>% of pages</th><th>Reason code</th><th>Action</th></tr>
+<tr><td>High-risk</td><td>27,234</td><td>22.0%</td><td>model_flagged_decoupling_risk</td><td>REVIEW_CONTENT_QUALITY</td></tr>
+<tr><td>Low-risk + visible</td><td>37,278</td><td>30.1%</td><td>stable_visible_asset</td><td>PROTECT_MONITOR</td></tr>
+<tr><td>Low-risk + low-visibility</td><td>59,171</td><td>47.8%</td><td>low_priority</td><td>NO_ACTION</td></tr>
+</table>
+<p>The "High-risk" tier (top 20% by model score) is the intended review queue — roughly 27,000
+pages flagged out of 123,683, still far too many to review at once. In practice, a strategist
+would combine this with the model's raw score to review the top N they have capacity for (e.g.
+the top 50&ndash;200), not the full high-risk tier at once. None of this should be automated:
+no auto-publishing, no auto-redirects, and no using this queue to evaluate an individual writer's
+performance, since the label reflects portfolio-wide search dynamics outside any one person's
+control.</p>
+
+<h2>Reproducibility</h2>
+<p>Full code, notebooks, and commit history: <a href="https://github.com/ridoy1211/Flyrank-Internship-ML">github.com/ridoy1211/Flyrank-Internship-ML</a></p>
+<ul>
+<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w01_research_question.ipynb">Week 1 — Research question</a></li>
+<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w03_data_contract.ipynb">Week 3 — Data contract</a></li>
+<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w04_baseline_score.ipynb">Week 4 — Baseline</a></li>
+<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w05_model.ipynb">Week 5 — Model</a></li>
+<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w06_validation_audit.ipynb">Week 6 — Validation audit</a></li>
+<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w07_action_playbook.ipynb">Week 7 — Action playbook</a></li>
+<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/capstone.ipynb">Capstone notebook</a></li>
+</ul>
+
+<div class="ack">
+<strong>Acknowledgments &amp; Data Credit.</strong> Built on the FlyRank ML Internship dataset —
+<a href="https://flyrank.ai">flyrank.ai</a>.
+</div>
+
+</body>
+</html>
