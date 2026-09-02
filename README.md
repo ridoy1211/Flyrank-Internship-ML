@@ -1,3 +1,25 @@
+# The Great Decoupling: Detecting Silent Click Loss in Search Content
+
+**[Read the full paper →](https://ridoy1211.github.io/Flyrank-Internship-ML/)**
+
+A machine learning capstone built on FlyRank's 79-million-row production search warehouse,
+investigating whether pages that hold steady search visibility while quietly losing clicks
+can be flagged early enough for a content strategist to act on.
+
+- **Result:** a Random Forest classifier achieves a 2.58x lift over a transparent baseline
+  and the base rate, on a client-grouped holdout split.
+- **Author:** Ridoy Hasan — [LinkedIn](https://www.linkedin.com/in/ridoy-hasan7/)
+
+Full methodology, validation, and limitations are in the deployed paper above. The notebooks
+behind every step are in `work/notebooks/`, in weekly order (research framing → data contract
+→ baseline → model → validation audit → action playbook → capstone).
+
+---
+
+*This repository was built as part of the FlyRank ML Internship. The internship's own setup
+documentation is preserved below for reproducibility.*
+
+
 # FlyRank ML Internship — Starter Repo
 
 **Applied Search Intelligence: Google Search Ranking & Discoverability**
