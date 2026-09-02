@@ -1,6 +1,6 @@
 # The Great Decoupling: Detecting Silent Click Loss in Search Content
 
-### 📄 Read the Full Paper
+
 
 > Explore the complete methodology, data analysis, modeling approach, 
 > experiments, results, and conclusions.
