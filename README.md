@@ -1,7 +1,8 @@
 # The Great Decoupling: Detecting Silent Click Loss in Search Content
 
-**[Read the full paper →](https://ridoy1211.github.io/Flyrank-Internship-ML/)**
-
+<a href="https://ridoy1211.github.io/Flyrank-Internship-ML" target="_blank">
+  <strong>Read the full paper →</strong>
+</a>
 A machine learning capstone built on FlyRank's 79-million-row production search warehouse,
 investigating whether pages that hold steady search visibility while quietly losing clicks
 can be flagged early enough for a content strategist to act on.
