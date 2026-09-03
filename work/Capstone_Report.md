@@ -116,6 +116,10 @@ token, and run `work/notebooks/capstone.ipynb` top to bottom in Colab with `HF_T
 Secret. Random seed `42` used throughout (`GroupShuffleSplit`, `RandomForestClassifier`). The
 sealed evaluation split is built and scored inside that same notebook cell, and its metrics are
 committed at `work/outputs/capstone_metrics.json` — checkable from the repo, not taken on faith.
+Note: because the warehouse query has no explicit row ordering, exact precision@50 can vary
+slightly between runs even with a fixed random seed, since GroupShuffleSplit's assignment
+depends on row order. ROC AUC and the qualitative conclusion (model beats baseline) are stable
+across runs; the point estimate at K=50 is not.
 
 ## 9. Acknowledgments & data credit
 
