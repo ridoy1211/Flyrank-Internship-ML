@@ -86,7 +86,7 @@ a hand-tuned single rule can't capture but a model can learn jointly.
 
 ## 6. Interpretation
 
-The Random Forest's meaningful lift (2.58x) over both the baseline and the base rate is evidence
+The Random Forest's meaningful lift (1.93x) over both the baseline and the base rate is evidence
 that combining impressions, clicks, CTR, position, and content metadata jointly captures more
 signal than any one hand-picked rule. A negative result worth reporting plainly: a
 content-freshness signal was hypothesized as a likely predictor (the "decay/refresh insight") but
