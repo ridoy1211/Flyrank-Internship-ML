@@ -79,7 +79,7 @@ grouped comparison in Week 6 confirmed this choice mattered.
 | Baseline rule | 0.00 | 0.493 | 0.0x |
 | Random Forest   | 0.06         | 0.805   | 1.93x               |
 
-Base rate (test set): 3.11%. **Error analysis:** the baseline's complete miss at the top of its
+Base rate (test set): 3.11%. 95% bootstrap CI on the model's precision@50: [0.00, 0.16]. **Error analysis:** the baseline's complete miss at the top of its
 ranking suggests the CTR-gap signal alone, without position and volume interacting jointly, isn't
 sufficient to separate real decoupling risk from ordinary noise — exactly the kind of interaction
 a hand-tuned single rule can't capture but a model can learn jointly.
