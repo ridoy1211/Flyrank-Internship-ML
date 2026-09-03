@@ -35,8 +35,8 @@ identified early enough from observable search signals for a strategist to act o
 real content pages from FlyRank's 79-million-row production search warehouse, we built a
 transparent baseline rule and a Random Forest classifier trained only on February 2026 signals,
 validated against March 2026 outcomes on a client-grouped holdout split. The baseline rule failed
-to beat random selection on this split (precision@50 of 0.00), while the Random Forest achieved a
-2.58x lift over the base rate (precision@50 of 0.08, ROC AUC 0.81) — evidence the added
+to beat random selection on this split (precision@50 of 0.00),1.93x lift over the base rate
+  (precision@50 of 0.06, ROC AUC 0.81, 95% CI [0.00, 0.16]) — evidence the added) — evidence the added
 complexity earned its place. The result is a ranked, human-reviewed action playbook intended to
 help FlyRank's content strategists triage which client pages need review first, before the click
 loss becomes visible in standard reporting.
@@ -107,15 +107,15 @@ both train and test), same metric, same label.</p>
 <table>
 <tr><th>Method</th><th>Precision@50</th><th>ROC AUC</th><th>Lift vs. base rate</th></tr>
 <tr><td>Baseline rule</td><td>0.00</td><td>0.493</td><td>0.0x</td></tr>
-<tr><td>Random Forest</td><td>0.08</td><td>0.806</td><td>2.58x</td></tr>
-</table>
+<tr><td>Random Forest</td><td>0.06</td><td>0.805</td><td>1.93x</td></tr></table>
 <p>Base rate (test set): 3.11%.</p>
 <img src="img/model_vs_baseline.png" alt="Bar chart comparing baseline rule and Random Forest precision at 50, with base rate marked">
 <p>The transparent baseline rule caught none of its top 50 flagged pages on this held-out split
 — performing at or below chance here. The Random Forest meaningfully outperformed both the
-baseline and random selection, correctly prioritizing roughly 4 of its top 50 picks versus the
+baseline and random selection, correctly prioritizing roughly 3 of its top 50 picks versus the
 ~1.6 expected by chance at this base rate. This is the clearest evidence in this project that the
 added model complexity earned its place, on this lane's data.</p>
+<p>Base rate (test set): 3.11%. 95% bootstrap CI on the model's precision@50: [0.00, 0.16].</p>
 
 <h2>Limitations &amp; Honest Framing</h2>
 <ul>
