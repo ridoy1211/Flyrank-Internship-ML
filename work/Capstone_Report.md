@@ -77,7 +77,7 @@ grouped comparison in Week 6 confirmed this choice mattered.
 | Method | Precision@50 | ROC AUC | Lift vs. base rate |
 |---|---:|---:|---:|
 | Baseline rule | 0.00 | 0.493 | 0.0x |
-| Random Forest | 0.08 | 0.806 | 2.58x |
+| Random Forest   | 0.06         | 0.805   | 1.93x               |
 
 Base rate (test set): 3.11%. **Error analysis:** the baseline's complete miss at the top of its
 ranking suggests the CTR-gap signal alone, without position and volume interacting jointly, isn't
