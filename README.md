@@ -11,7 +11,7 @@ A machine learning capstone built on FlyRank's 79-million-row production search 
 investigating whether pages that hold steady search visibility while quietly losing clicks
 can be flagged early enough for a content strategist to act on.
 
-- **Result:** a Random Forest classifier achieves a 2.58x lift over a transparent baseline
+- **Result:** a Random Forest classifier achieves a 1.93x lift over a transparent baseline
   and the base rate, on a client-grouped holdout split.
 - **Author:** Ridoy Hasan — [LinkedIn](https://www.linkedin.com/in/ridoy-hasan7/)
 
