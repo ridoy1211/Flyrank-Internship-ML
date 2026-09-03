@@ -16,8 +16,7 @@ observable search signals for a strategist to act on. Using 123,683 real content
 FlyRank's 79-million-row production search warehouse, we built a transparent baseline rule and a
 Random Forest classifier trained only on February 2026 signals, validated against March 2026
 outcomes on a client-grouped holdout split. The baseline rule failed to beat random selection on
-this split (precision@50 of 0.00), while the Random Forest achieved a 2.58x lift over the base
-rate (precision@50 of 0.08, ROC AUC 0.81). The result is a ranked, human-reviewed action playbook
+this split (precision@50 of 0.00),while the Random Forest achieved a 1.93x lift over the base rate (precision@50 of 0.06, ROC AUC 0.81, 95% CI [0.00, 0.16]). The result is a ranked, human-reviewed action playbook
 intended to help FlyRank's content strategists triage which client pages need review first,
 before the click loss becomes visible in standard reporting.
 
