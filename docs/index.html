@@ -250,13 +250,13 @@ not be used to evaluate an individual writer's performance, since the label refl
 portfolio-wide search dynamics that sit well outside any one person's control.</p>
 
 <h2>Reproducibility</h2>
-<p class="Justified">Full code, notebooks, and commit history: <a href="https://github.com/ridoy1211/Flyrank-Internship-ML">github.com/ridoy1211/Flyrank-Internship-ML</a>.
+<p class="Justified"><p>Full code, notebooks, and commit history: <a href="https://github.com/ridoy1211/Flyrank-Internship-ML">github.com/ridoy1211/Flyrank-Internship-ML</a>.
 Random seed 42 is fixed throughout. One caveat worth stating plainly: the warehouse query behind
 this analysis has no explicit row ordering, so the exact precision@50 point estimate can shift
 slightly between runs even with a fixed seed, because the client-grouped split depends on row
 order. ROC AUC and the qualitative result (model beats baseline, model beats chance) are stable
 across the reruns we performed; the K=50 point estimate is not, which is part of why we report a
-confidence interval instead of a bare number.</p>
+confidence interval instead of a bare number.</p></p>
 <ul>
 <li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w01_research_question.ipynb">Week 1 &mdash; Research question</a></li>
 <li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w02_ml_task_framing.ipynb">Week 2 &mdash; Task framing</a></li>
