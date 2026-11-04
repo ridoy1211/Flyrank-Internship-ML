@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "tests_run": 80,
+  "failures": 0,
+  "errors": 0,
+  "runtime_seconds": 30.902,
+  "scope": "Full tests directory, including canonical-package parity tests",
+  "environment": "Local bundled Python with pinned scientific dependencies from work/fix1deps",
+  "warehouse_access": false,
+  "june_access": false
+}

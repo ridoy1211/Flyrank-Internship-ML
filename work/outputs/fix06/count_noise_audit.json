@@ -1,0 +1,639 @@
+{
+  "protocol": {
+    "version": "fix06-v1",
+    "status": "exploratory_reference_audit_after_Fix05_review",
+    "purpose": "Describe raw event counts against a simple stationary click-allocation reference.",
+    "source": "Existing Fix05 page-episode aggregates and unchanged cohorts; no new warehouse query or model fit.",
+    "population": "Complete-case members of each fixed Fix05 arm, restricted to 1<=prior+future clicks<=200.",
+    "cap_reason": "Predeclared computational scope for the low-total-count diagnostic; total clicks are conditioned on by the reference.",
+    "null": "Independent Bernoulli clicks per impression with one common page CTR in the two windows.",
+    "conditioning": "Both impression totals, the combined click total, and prior clicks>0.",
+    "reference": "Future clicks X ~ Hypergeometric(M=I0+I1,n=C0+C1,N=I1), truncated to X<=C0+C1-1.",
+    "signature_probability": "If stable impressions, F(floor(17*(C0+C1)/37))/F(C0+C1-1); otherwise 0.",
+    "computation": "Finite-support hypergeometric weights from log-ratio recurrence; batches of at most 4096 rows.",
+    "reporting": "Observed signatures beside sum of conditional probabilities on exactly the same modeled subset.",
+    "prior_click_bands": "Observed counts only. No reference expectation is reported by observed prior-click band.",
+    "not_forecast": "Reference uses future impressions and clicks. It is outcome analysis, never a predictor or ranking baseline.",
+    "limitations": [
+      "The common-CTR independent-click model may fail under temporal dependence, changing query mix, seasonality or heterogeneous exposure.",
+      "Complete-case retention must be ignorable under this conditional reference; outcome-dependent observation can invalidate it.",
+      "Other eligibility/arm membership is treated as fixed under the reference.",
+      "Total-click restriction uses future counts and does not redefine the main prediction population.",
+      "No false-positive fraction, equivalence, calibrated hypothesis test, confidence interval or causal attribution follows.",
+      "Arms overlap and monthly pages/clients repeat; do not pool them as independent evidence."
+    ]
+  },
+  "protocol_sha256": "ddff3ee946539fd8da6d869b5d3752bd8aba708dd22359fd0f3c396b92811291",
+  "source_fix05_protocol_sha256": "fa08ab634857e99ecdd9b194c93105795258b31ddaed49454c55f2d8a478e0a8",
+  "rows": [
+    {
+      "origin": "2026-02-01",
+      "arm": "known_clients",
+      "source_cohort_sha256": "9c1829a7dcd3fe9d10a56a63c68253cd7357a79400e888599af76e608ca0536a",
+      "full_arm_observation": {
+        "n_pages": 32044,
+        "n_observed": 30237,
+        "n_unknown": 1807,
+        "observed_positive_count": 1722,
+        "observed_event_rate": 0.05695009425538248
+      },
+      "reference_subset": {
+        "n_modeled_pages": 29643,
+        "n_observed_pages_excluded_total_clicks_gt_200": 594,
+        "fraction_of_observed_pages_modeled": 0.9803551939676555,
+        "n_stable_impression_pages": 4441,
+        "observed_signature_count": 1685,
+        "stationary_reference_expected_signature_count": 1828.5336780567523,
+        "observed_minus_reference_expected_count_descriptive": -143.53367805675225,
+        "observed_signature_rate": 0.056843099551327464,
+        "stationary_reference_expected_signature_rate": 0.061685176198655746
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 17421,
+          "n_observed": 15962,
+          "n_unknown": 1459,
+          "observed_positive_count": 816,
+          "observed_event_rate": 0.05112141335672222
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 10183,
+          "n_observed": 9890,
+          "n_unknown": 293,
+          "observed_positive_count": 563,
+          "observed_event_rate": 0.05692618806875632
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 4440,
+          "n_observed": 4385,
+          "n_unknown": 55,
+          "observed_positive_count": 343,
+          "observed_event_rate": 0.0782212086659065
+        }
+      ],
+      "reference_input_sha256": "4ab433584168454b7ebf0ef1d9cb3225dba8426bee38ebc5b1357edf81857f58"
+    },
+    {
+      "origin": "2026-02-01",
+      "arm": "naturally_unseen_clients",
+      "source_cohort_sha256": "9a2e4c4df06d490fddd97d1c2c881843eea8f91927fb635d3e6624b8beac4001",
+      "full_arm_observation": {
+        "n_pages": 37,
+        "n_observed": 20,
+        "n_unknown": 17,
+        "observed_positive_count": 2,
+        "observed_event_rate": 0.1
+      },
+      "reference_subset": {
+        "n_modeled_pages": 20,
+        "n_observed_pages_excluded_total_clicks_gt_200": 0,
+        "fraction_of_observed_pages_modeled": 1.0,
+        "n_stable_impression_pages": 3,
+        "observed_signature_count": 2,
+        "stationary_reference_expected_signature_count": 1.631483424283998,
+        "observed_minus_reference_expected_count_descriptive": 0.36851657571600205,
+        "observed_signature_rate": 0.1,
+        "stationary_reference_expected_signature_rate": 0.0815741712141999
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 36,
+          "n_observed": 19,
+          "n_unknown": 17,
+          "observed_positive_count": 2,
+          "observed_event_rate": 0.10526315789473684
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 1,
+          "n_observed": 1,
+          "n_unknown": 0,
+          "observed_positive_count": 0,
+          "observed_event_rate": 0.0
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 0,
+          "n_observed": 0,
+          "n_unknown": 0,
+          "observed_positive_count": 0,
+          "observed_event_rate": null
+        }
+      ],
+      "reference_input_sha256": "650bba385ac41a39726ff51fce503dc9d76ca6b355d155c21d0cc8071b3597bc"
+    },
+    {
+      "origin": "2026-02-01",
+      "arm": "hash_heldout_clients",
+      "source_cohort_sha256": "0cb4281c53e03d0104d042d1cb6bc6d97a123b57902a52deec78939c8103209b",
+      "full_arm_observation": {
+        "n_pages": 8248,
+        "n_observed": 8167,
+        "n_unknown": 81,
+        "observed_positive_count": 510,
+        "observed_event_rate": 0.062446430757928245
+      },
+      "reference_subset": {
+        "n_modeled_pages": 7924,
+        "n_observed_pages_excluded_total_clicks_gt_200": 243,
+        "fraction_of_observed_pages_modeled": 0.9702461124035754,
+        "n_stable_impression_pages": 1406,
+        "observed_signature_count": 492,
+        "stationary_reference_expected_signature_count": 559.5656012144832,
+        "observed_minus_reference_expected_count_descriptive": -67.5656012144832,
+        "observed_signature_rate": 0.06208985360928824,
+        "stationary_reference_expected_signature_rate": 0.07061655744756223
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 4517,
+          "n_observed": 4441,
+          "n_unknown": 76,
+          "observed_positive_count": 205,
+          "observed_event_rate": 0.046160774600315244
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 2428,
+          "n_observed": 2423,
+          "n_unknown": 5,
+          "observed_positive_count": 175,
+          "observed_event_rate": 0.07222451506397029
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 1303,
+          "n_observed": 1303,
+          "n_unknown": 0,
+          "observed_positive_count": 130,
+          "observed_event_rate": 0.0997697620874904
+        }
+      ],
+      "reference_input_sha256": "07abe1e65620e2767a1633897a7021f2bef18d950386522a8117aee91c353f33"
+    },
+    {
+      "origin": "2026-03-01",
+      "arm": "known_clients",
+      "source_cohort_sha256": "c71811cfa1ac2b54cb089bf2e7ee2ec1861e56fff136d1daa90a2e7b6ce9b154",
+      "full_arm_observation": {
+        "n_pages": 38331,
+        "n_observed": 32180,
+        "n_unknown": 6151,
+        "observed_positive_count": 2917,
+        "observed_event_rate": 0.0906463642013673
+      },
+      "reference_subset": {
+        "n_modeled_pages": 31632,
+        "n_observed_pages_excluded_total_clicks_gt_200": 548,
+        "fraction_of_observed_pages_modeled": 0.9829707893101305,
+        "n_stable_impression_pages": 6064,
+        "observed_signature_count": 2873,
+        "stationary_reference_expected_signature_count": 2533.6231596527577,
+        "observed_minus_reference_expected_count_descriptive": 339.37684034724225,
+        "observed_signature_rate": 0.09082574607991907,
+        "stationary_reference_expected_signature_rate": 0.08009683736889092
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 20024,
+          "n_observed": 16081,
+          "n_unknown": 3943,
+          "observed_positive_count": 1306,
+          "observed_event_rate": 0.08121385485977241
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 12643,
+          "n_observed": 11093,
+          "n_unknown": 1550,
+          "observed_positive_count": 1054,
+          "observed_event_rate": 0.09501487424501938
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 5664,
+          "n_observed": 5006,
+          "n_unknown": 658,
+          "observed_positive_count": 557,
+          "observed_event_rate": 0.11126648022373152
+        }
+      ],
+      "reference_input_sha256": "b445b05df19fdd9460424e93db4d710a600144eadca685fa9b2cd1827189c4c2"
+    },
+    {
+      "origin": "2026-03-01",
+      "arm": "naturally_unseen_clients",
+      "source_cohort_sha256": "f2fa88fd2cd6fed8331051e7c46368beba5337e3f4fa7148a3a1c54b3dd788b8",
+      "full_arm_observation": {
+        "n_pages": 202,
+        "n_observed": 132,
+        "n_unknown": 70,
+        "observed_positive_count": 6,
+        "observed_event_rate": 0.045454545454545456
+      },
+      "reference_subset": {
+        "n_modeled_pages": 132,
+        "n_observed_pages_excluded_total_clicks_gt_200": 0,
+        "fraction_of_observed_pages_modeled": 1.0,
+        "n_stable_impression_pages": 16,
+        "observed_signature_count": 6,
+        "stationary_reference_expected_signature_count": 7.841536932734412,
+        "observed_minus_reference_expected_count_descriptive": -1.841536932734412,
+        "observed_signature_rate": 0.045454545454545456,
+        "stationary_reference_expected_signature_rate": 0.05940558282374554
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 183,
+          "n_observed": 116,
+          "n_unknown": 67,
+          "observed_positive_count": 4,
+          "observed_event_rate": 0.034482758620689655
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 17,
+          "n_observed": 14,
+          "n_unknown": 3,
+          "observed_positive_count": 2,
+          "observed_event_rate": 0.14285714285714285
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 2,
+          "n_observed": 2,
+          "n_unknown": 0,
+          "observed_positive_count": 0,
+          "observed_event_rate": 0.0
+        }
+      ],
+      "reference_input_sha256": "b15ac0e2a4391a44c473867e2f5f2583d4059e4dd9e80629b62a3f2b79142a0f"
+    },
+    {
+      "origin": "2026-03-01",
+      "arm": "hash_heldout_clients",
+      "source_cohort_sha256": "e007a33ffc19fcd6f460a047543556131ad87d42b269fb89bcdecd7a7e1ad6ac",
+      "full_arm_observation": {
+        "n_pages": 10539,
+        "n_observed": 10273,
+        "n_unknown": 266,
+        "observed_positive_count": 1078,
+        "observed_event_rate": 0.10493526720529543
+      },
+      "reference_subset": {
+        "n_modeled_pages": 10024,
+        "n_observed_pages_excluded_total_clicks_gt_200": 249,
+        "fraction_of_observed_pages_modeled": 0.9757617054414485,
+        "n_stable_impression_pages": 2222,
+        "observed_signature_count": 1053,
+        "stationary_reference_expected_signature_count": 948.114935067546,
+        "observed_minus_reference_expected_count_descriptive": 104.88506493245404,
+        "observed_signature_rate": 0.10504788507581804,
+        "stationary_reference_expected_signature_rate": 0.09458449072900499
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 5553,
+          "n_observed": 5297,
+          "n_unknown": 256,
+          "observed_positive_count": 523,
+          "observed_event_rate": 0.09873513309420427
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 3270,
+          "n_observed": 3261,
+          "n_unknown": 9,
+          "observed_positive_count": 348,
+          "observed_event_rate": 0.10671573137074516
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 1716,
+          "n_observed": 1715,
+          "n_unknown": 1,
+          "observed_positive_count": 207,
+          "observed_event_rate": 0.1206997084548105
+        }
+      ],
+      "reference_input_sha256": "8625fc1419b2a786e0d8181458cc19d8adb3ced9f3f4a3a857d40e3e3cccfe87"
+    },
+    {
+      "origin": "2026-04-01",
+      "arm": "known_clients",
+      "source_cohort_sha256": "8461bf133c08dd6e753fadddb359bceddc9b816c439bf8e1d5f9c6d5877551b0",
+      "full_arm_observation": {
+        "n_pages": 37923,
+        "n_observed": 34201,
+        "n_unknown": 3722,
+        "observed_positive_count": 2809,
+        "observed_event_rate": 0.08213210140054385
+      },
+      "reference_subset": {
+        "n_modeled_pages": 33624,
+        "n_observed_pages_excluded_total_clicks_gt_200": 577,
+        "fraction_of_observed_pages_modeled": 0.9831291482705184,
+        "n_stable_impression_pages": 4970,
+        "observed_signature_count": 2743,
+        "stationary_reference_expected_signature_count": 2102.5049979402015,
+        "observed_minus_reference_expected_count_descriptive": 640.4950020597985,
+        "observed_signature_rate": 0.08157863430882703,
+        "stationary_reference_expected_signature_rate": 0.0625298893034797
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 19780,
+          "n_observed": 16309,
+          "n_unknown": 3471,
+          "observed_positive_count": 1127,
+          "observed_event_rate": 0.06910294929180208
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 12443,
+          "n_observed": 12207,
+          "n_unknown": 236,
+          "observed_positive_count": 1029,
+          "observed_event_rate": 0.08429589579749325
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 5700,
+          "n_observed": 5685,
+          "n_unknown": 15,
+          "observed_positive_count": 653,
+          "observed_event_rate": 0.1148636763412489
+        }
+      ],
+      "reference_input_sha256": "e89bc4c60160840ce50186bc57e6750ba1b16541f91368e590e737fe16a4a079"
+    },
+    {
+      "origin": "2026-04-01",
+      "arm": "naturally_unseen_clients",
+      "source_cohort_sha256": "23c016c1c274fb04df01747e12cd93efd9dd4ecfc619140df6c3d0beb75212aa",
+      "full_arm_observation": {
+        "n_pages": 6004,
+        "n_observed": 5409,
+        "n_unknown": 595,
+        "observed_positive_count": 463,
+        "observed_event_rate": 0.08559807727860973
+      },
+      "reference_subset": {
+        "n_modeled_pages": 5256,
+        "n_observed_pages_excluded_total_clicks_gt_200": 153,
+        "fraction_of_observed_pages_modeled": 0.9717138103161398,
+        "n_stable_impression_pages": 843,
+        "observed_signature_count": 461,
+        "stationary_reference_expected_signature_count": 349.3472227579242,
+        "observed_minus_reference_expected_count_descriptive": 111.65277724207579,
+        "observed_signature_rate": 0.08770928462709285,
+        "stationary_reference_expected_signature_rate": 0.06646636658255788
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 2889,
+          "n_observed": 2350,
+          "n_unknown": 539,
+          "observed_positive_count": 186,
+          "observed_event_rate": 0.07914893617021276
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 1921,
+          "n_observed": 1871,
+          "n_unknown": 50,
+          "observed_positive_count": 181,
+          "observed_event_rate": 0.09673971138428648
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 1194,
+          "n_observed": 1188,
+          "n_unknown": 6,
+          "observed_positive_count": 96,
+          "observed_event_rate": 0.08080808080808081
+        }
+      ],
+      "reference_input_sha256": "c5edc1904efc6bac5e40c78e22a908aa1f162ca2ab382585e0efa947cde1d2b0"
+    },
+    {
+      "origin": "2026-04-01",
+      "arm": "hash_heldout_clients",
+      "source_cohort_sha256": "d9e5ccd1559d2eac2025a39dc62dd1cca6ff52a8b167438d408dc809619b168e",
+      "full_arm_observation": {
+        "n_pages": 12641,
+        "n_observed": 11711,
+        "n_unknown": 930,
+        "observed_positive_count": 1056,
+        "observed_event_rate": 0.09017163350695927
+      },
+      "reference_subset": {
+        "n_modeled_pages": 11387,
+        "n_observed_pages_excluded_total_clicks_gt_200": 324,
+        "fraction_of_observed_pages_modeled": 0.9723337033558194,
+        "n_stable_impression_pages": 1987,
+        "observed_signature_count": 1024,
+        "stationary_reference_expected_signature_count": 847.4758367894802,
+        "observed_minus_reference_expected_count_descriptive": 176.52416321051976,
+        "observed_signature_rate": 0.08992710986212347,
+        "stationary_reference_expected_signature_rate": 0.07442485613326427
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 6791,
+          "n_observed": 5923,
+          "n_unknown": 868,
+          "observed_positive_count": 486,
+          "observed_event_rate": 0.08205301367550227
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 3745,
+          "n_observed": 3684,
+          "n_unknown": 61,
+          "observed_positive_count": 338,
+          "observed_event_rate": 0.09174809989142237
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 2105,
+          "n_observed": 2104,
+          "n_unknown": 1,
+          "observed_positive_count": 232,
+          "observed_event_rate": 0.11026615969581749
+        }
+      ],
+      "reference_input_sha256": "2f03b698930fc658cd3fcba549903793ea1b7e237c6d2452d995d188f5d34e3c"
+    },
+    {
+      "origin": "2026-05-01",
+      "arm": "known_clients",
+      "source_cohort_sha256": "575cea43fbb13a7e10563e1633c9f5bc5c46374fdc60b33605c2ea13db48d832",
+      "full_arm_observation": {
+        "n_pages": 41470,
+        "n_observed": 38116,
+        "n_unknown": 3354,
+        "observed_positive_count": 2474,
+        "observed_event_rate": 0.06490712561653898
+      },
+      "reference_subset": {
+        "n_modeled_pages": 37418,
+        "n_observed_pages_excluded_total_clicks_gt_200": 698,
+        "fraction_of_observed_pages_modeled": 0.9816874803232238,
+        "n_stable_impression_pages": 6023,
+        "observed_signature_count": 2413,
+        "stationary_reference_expected_signature_count": 2485.088723455061,
+        "observed_minus_reference_expected_count_descriptive": -72.08872345506097,
+        "observed_signature_rate": 0.06448767972633491,
+        "stationary_reference_expected_signature_rate": 0.06641425847065746
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 22501,
+          "n_observed": 19910,
+          "n_unknown": 2591,
+          "observed_positive_count": 1092,
+          "observed_event_rate": 0.05484681064791562
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 12238,
+          "n_observed": 12111,
+          "n_unknown": 127,
+          "observed_positive_count": 848,
+          "observed_event_rate": 0.07001899099991743
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 6731,
+          "n_observed": 6095,
+          "n_unknown": 636,
+          "observed_positive_count": 534,
+          "observed_event_rate": 0.08761279737489745
+        }
+      ],
+      "reference_input_sha256": "6db72b5085523bc1faeafac72a09bb281dcfda0829616b0c4d4a1b0e7463c144"
+    },
+    {
+      "origin": "2026-05-01",
+      "arm": "naturally_unseen_clients",
+      "source_cohort_sha256": "056b045cd481258ab9811c48083df791fa94326ef0b62557d71e737afbd1d0fa",
+      "full_arm_observation": {
+        "n_pages": 9057,
+        "n_observed": 8215,
+        "n_unknown": 842,
+        "observed_positive_count": 353,
+        "observed_event_rate": 0.04297017650639075
+      },
+      "reference_subset": {
+        "n_modeled_pages": 8007,
+        "n_observed_pages_excluded_total_clicks_gt_200": 208,
+        "fraction_of_observed_pages_modeled": 0.9746804625684723,
+        "n_stable_impression_pages": 844,
+        "observed_signature_count": 347,
+        "stationary_reference_expected_signature_count": 340.63704831035693,
+        "observed_minus_reference_expected_count_descriptive": 6.362951689643069,
+        "observed_signature_rate": 0.04333708005495192,
+        "stationary_reference_expected_signature_rate": 0.0425424064331656
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 4273,
+          "n_observed": 3498,
+          "n_unknown": 775,
+          "observed_positive_count": 155,
+          "observed_event_rate": 0.044311034877072615
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 3044,
+          "n_observed": 2984,
+          "n_unknown": 60,
+          "observed_positive_count": 122,
+          "observed_event_rate": 0.04088471849865952
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 1740,
+          "n_observed": 1733,
+          "n_unknown": 7,
+          "observed_positive_count": 76,
+          "observed_event_rate": 0.04385458742065782
+        }
+      ],
+      "reference_input_sha256": "982c0ce42f48e1f4f639b27ade95c88d6009c81cb8d2fb6f7558d4ab1d689696"
+    },
+    {
+      "origin": "2026-05-01",
+      "arm": "hash_heldout_clients",
+      "source_cohort_sha256": "47dc25a0fcdb9291c196670553d8b8bb1fa5b41ec5fdb0e40b500e86c0cc9ac7",
+      "full_arm_observation": {
+        "n_pages": 14302,
+        "n_observed": 13581,
+        "n_unknown": 721,
+        "observed_positive_count": 985,
+        "observed_event_rate": 0.07252779618584787
+      },
+      "reference_subset": {
+        "n_modeled_pages": 13177,
+        "n_observed_pages_excluded_total_clicks_gt_200": 404,
+        "fraction_of_observed_pages_modeled": 0.9702525587217437,
+        "n_stable_impression_pages": 2413,
+        "observed_signature_count": 954,
+        "stationary_reference_expected_signature_count": 991.1419770751485,
+        "observed_minus_reference_expected_count_descriptive": -37.141977075148475,
+        "observed_signature_rate": 0.07239887683084162,
+        "stationary_reference_expected_signature_rate": 0.07521757433976994
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 7253,
+          "n_observed": 6574,
+          "n_unknown": 679,
+          "observed_positive_count": 454,
+          "observed_event_rate": 0.06905993306966839
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 4451,
+          "n_observed": 4413,
+          "n_unknown": 38,
+          "observed_positive_count": 307,
+          "observed_event_rate": 0.06956718785406753
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 2598,
+          "n_observed": 2594,
+          "n_unknown": 4,
+          "observed_positive_count": 224,
+          "observed_event_rate": 0.08635312259059368
+        }
+      ],
+      "reference_input_sha256": "8d9b7344ac933014ef9a03d11bcba69f1d664b7781a68cc88f1f28d310ad415e"
+    }
+  ],
+  "interpretation": "Reference-model diagnostic only. An observed signature is not declared spurious, and model rankings are unchanged.",
+  "execution": {
+    "mode": "user_colab_cached_aggregates",
+    "source_results_folds_sha256": "b05f6979d52429b57e8e9c9aa52a377f345f9fffd4cfca40a33f1e551624ca3a",
+    "implementation_sha256": "13f51cc6f3dd8edec9f44fdf8a50b2498f0006ea0cf93a849cb2f9dea04c66d5",
+    "new_model_fit": false,
+    "warehouse_query": false,
+    "june_read": false
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-04",
+  "execution": "Agent-run repair in user-approved connected Colab on existing private aggregates",
+  "warehouse_query": false,
+  "rows_checked": 8,
+  "client_deletion_cases_checked": 180,
+  "all_12_Fix06_rows_reproduced_exactly": true,
+  "original_LR_CTR_excess_prediction_hashes_verified": true,
+  "paired_audit_sha256": "951d900dc1041b01c6adda096dbc4f985c7320f46667a0c160ff7d1f46aadd19",
+  "bundle_sha256": "4a7d99c324c74ac994f3a86ff6025cb96738727239a0f044a13316b6fd27c33e",
+  "guard_recovery_implementation_sha256": "67138ce3d592eb3ff6244be129ad40c2a98669d95b6b69ceb54d1c06f2a828e4"
+}

@@ -1,0 +1,97 @@
+{
+  "protocol": {
+    "version": "fix05-v1",
+    "status": "frozen_retrospective_protocol_not_preregistration",
+    "question": "Does a fixed learned ranking add retrieval value beyond simple rules on later periods?",
+    "primary_learned_reference": "Logistic Regression",
+    "methods": [
+      "Baseline rule",
+      "Logistic Regression",
+      "Random Forest",
+      "Prior clicks",
+      "Prior impressions",
+      "Prior CTR",
+      "Visible pooled-CTR shortfall",
+      "Visible pooled-CTR excess"
+    ],
+    "features": [
+      "impressions_prior28",
+      "clicks_prior28",
+      "ctr_prior28",
+      "avg_position_prior28"
+    ],
+    "metadata_used": false,
+    "ids_are_features": false,
+    "origins": [
+      "2026-02-01",
+      "2026-03-01",
+      "2026-04-01",
+      "2026-05-01"
+    ],
+    "development_origins": [
+      "2026-02-01",
+      "2026-03-01"
+    ],
+    "later_origins": [
+      "2026-04-01",
+      "2026-05-01"
+    ],
+    "later_origin_status": "Not scored by this repair workflow; prior user exposure is unknown. Not a blind-test claim.",
+    "feature_window": "t-31 through t-4 inclusive, 28 days",
+    "outcome_window": "t through t+27 inclusive, 28 days",
+    "assumed_gap": "Three full date labels t-3,t-2,t-1; all training outcome dates must also be <=t-4.",
+    "availability_limitation": "Retrospective final release; no historical ingestion vintages. Buffer is an assumption, not verified availability.",
+    "date_convention": "Warehouse report_date labels, without timezone conversion; source timezone not independently verified.",
+    "training": "Exactly the last three mature episode origins, pooled page-episodes; no shorter fallback history.",
+    "training_guards": {
+      "n_labelable_rows": 500,
+      "n_clients": 2,
+      "each_class": 20
+    },
+    "primary_population": "As-of eligible pages of clients with a labelable row in the rolling training frame.",
+    "eligibility": "28 explicit available prior daily rows; I>0, C>0, finite positive impression-weighted position. Sparse/missing days are not zero-filled.",
+    "outcome_observability": "28 explicit available outcome rows with valid counts; otherwise unknown, retained in the as-of queue.",
+    "label": "9*I_prior<=10*I_outcome<=11*I_prior and 20*C_outcome<=17*C_prior",
+    "primary_budget": 50,
+    "secondary_budgets": [
+      25,
+      100,
+      200
+    ],
+    "primary_reporting": "Rank all eligible pages before outcome filtering. Report observed hits, unknowns, bounds; point precision only for fully observed queues.",
+    "secondary_reporting": "Complete-case metrics, support >=5/20 without refitting, anonymous client contributions.",
+    "tie_policy": "Descending score, stable canonical client/content key order; conditional tie ranges also reported.",
+    "hash_holdout": "sha256(flyrank-fix05-v1|client_id) mod 4 == 0; excluded from all hash-arm training; descriptive.",
+    "models": {
+      "LR": {
+        "C": 1.0,
+        "max_iter": 1000,
+        "seed": 42
+      },
+      "RF": {
+        "n_estimators": 300,
+        "seed": 42,
+        "n_jobs": -1,
+        "other_parameters": "sklearn 1.7.2 defaults"
+      },
+      "preprocessing": "Independent StandardScaler per model, four numeric features only; no tuning or winner selection."
+    },
+    "rules": "Training-only position bands (0,3,10,20,50,infinity); medians or pooled CTR; visibility at training median I. High prior counts/CTR rank first.",
+    "unseen_band_fallback": "Global training median CTR for original rule; global pooled training CTR for pooled rules.",
+    "source_months": [
+      "2025-10",
+      "2025-11",
+      "2025-12",
+      "2026-01",
+      "2026-02",
+      "2026-03",
+      "2026-04",
+      "2026-05"
+    ],
+    "final_month": "June 2026 is excluded, including the sample table.",
+    "inference_limits": "Repeated pages and clients; no iid page confidence intervals. Few periods/clients may preclude a strong claim.",
+    "changes_from_stage2": "Numeric-only features, lagged schedule, rolling fitting, different client split and as-of queues. Changes cannot be attributed solely to time splitting."
+  },
+  "protocol_sha256": "fa08ab634857e99ecdd9b194c93105795258b31ddaed49454c55f2d8a478e0a8",
+  "implementation_sha256": "deaabdaca80ec90d827cbd974f9527318beb4b8a5caf91c8406ef6ddc9f87cc6"
+}

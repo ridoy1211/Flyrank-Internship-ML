@@ -1,0 +1,167 @@
+{
+  "protocol": {
+    "version": "clean-development-v1",
+    "status": "consolidated_retrospective_analysis_not_preregistration",
+    "forecast_protocol": {
+      "version": "fix05-v1",
+      "status": "frozen_retrospective_protocol_not_preregistration",
+      "question": "Does a fixed learned ranking add retrieval value beyond simple rules on later periods?",
+      "primary_learned_reference": "Logistic Regression",
+      "methods": [
+        "Baseline rule",
+        "Logistic Regression",
+        "Random Forest",
+        "Prior clicks",
+        "Prior impressions",
+        "Prior CTR",
+        "Visible pooled-CTR shortfall",
+        "Visible pooled-CTR excess"
+      ],
+      "features": [
+        "impressions_prior28",
+        "clicks_prior28",
+        "ctr_prior28",
+        "avg_position_prior28"
+      ],
+      "metadata_used": false,
+      "ids_are_features": false,
+      "origins": [
+        "2026-02-01",
+        "2026-03-01",
+        "2026-04-01",
+        "2026-05-01"
+      ],
+      "development_origins": [
+        "2026-02-01",
+        "2026-03-01"
+      ],
+      "later_origins": [
+        "2026-04-01",
+        "2026-05-01"
+      ],
+      "later_origin_status": "Not scored by this repair workflow; prior user exposure is unknown. Not a blind-test claim.",
+      "feature_window": "t-31 through t-4 inclusive, 28 days",
+      "outcome_window": "t through t+27 inclusive, 28 days",
+      "assumed_gap": "Three full date labels t-3,t-2,t-1; all training outcome dates must also be <=t-4.",
+      "availability_limitation": "Retrospective final release; no historical ingestion vintages. Buffer is an assumption, not verified availability.",
+      "date_convention": "Warehouse report_date labels, without timezone conversion; source timezone not independently verified.",
+      "training": "Exactly the last three mature episode origins, pooled page-episodes; no shorter fallback history.",
+      "training_guards": {
+        "n_labelable_rows": 500,
+        "n_clients": 2,
+        "each_class": 20
+      },
+      "primary_population": "As-of eligible pages of clients with a labelable row in the rolling training frame.",
+      "eligibility": "28 explicit available prior daily rows; I>0, C>0, finite positive impression-weighted position. Sparse/missing days are not zero-filled.",
+      "outcome_observability": "28 explicit available outcome rows with valid counts; otherwise unknown, retained in the as-of queue.",
+      "label": "9*I_prior<=10*I_outcome<=11*I_prior and 20*C_outcome<=17*C_prior",
+      "primary_budget": 50,
+      "secondary_budgets": [
+        25,
+        100,
+        200
+      ],
+      "primary_reporting": "Rank all eligible pages before outcome filtering. Report observed hits, unknowns, bounds; point precision only for fully observed queues.",
+      "secondary_reporting": "Complete-case metrics, support >=5/20 without refitting, anonymous client contributions.",
+      "tie_policy": "Descending score, stable canonical client/content key order; conditional tie ranges also reported.",
+      "hash_holdout": "sha256(flyrank-fix05-v1|client_id) mod 4 == 0; excluded from all hash-arm training; descriptive.",
+      "models": {
+        "LR": {
+          "C": 1.0,
+          "max_iter": 1000,
+          "seed": 42
+        },
+        "RF": {
+          "n_estimators": 300,
+          "seed": 42,
+          "n_jobs": -1,
+          "other_parameters": "sklearn 1.7.2 defaults"
+        },
+        "preprocessing": "Independent StandardScaler per model, four numeric features only; no tuning or winner selection."
+      },
+      "rules": "Training-only position bands (0,3,10,20,50,infinity); medians or pooled CTR; visibility at training median I. High prior counts/CTR rank first.",
+      "unseen_band_fallback": "Global training median CTR for original rule; global pooled training CTR for pooled rules.",
+      "source_months": [
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05"
+      ],
+      "final_month": "June 2026 is excluded, including the sample table.",
+      "inference_limits": "Repeated pages and clients; no iid page confidence intervals. Few periods/clients may preclude a strong claim.",
+      "changes_from_stage2": "Numeric-only features, lagged schedule, rolling fitting, different client split and as-of queues. Changes cannot be attributed solely to time splitting."
+    },
+    "forecast_protocol_sha256": "fa08ab634857e99ecdd9b194c93105795258b31ddaed49454c55f2d8a478e0a8",
+    "count_reference_protocol": {
+      "version": "fix06-v1",
+      "status": "exploratory_reference_audit_after_Fix05_review",
+      "purpose": "Describe raw event counts against a simple stationary click-allocation reference.",
+      "source": "Existing Fix05 page-episode aggregates and unchanged cohorts; no new warehouse query or model fit.",
+      "population": "Complete-case members of each fixed Fix05 arm, restricted to 1<=prior+future clicks<=200.",
+      "cap_reason": "Predeclared computational scope for the low-total-count diagnostic; total clicks are conditioned on by the reference.",
+      "null": "Independent Bernoulli clicks per impression with one common page CTR in the two windows.",
+      "conditioning": "Both impression totals, the combined click total, and prior clicks>0.",
+      "reference": "Future clicks X ~ Hypergeometric(M=I0+I1,n=C0+C1,N=I1), truncated to X<=C0+C1-1.",
+      "signature_probability": "If stable impressions, F(floor(17*(C0+C1)/37))/F(C0+C1-1); otherwise 0.",
+      "computation": "Finite-support hypergeometric weights from log-ratio recurrence; batches of at most 4096 rows.",
+      "reporting": "Observed signatures beside sum of conditional probabilities on exactly the same modeled subset.",
+      "prior_click_bands": "Observed counts only. No reference expectation is reported by observed prior-click band.",
+      "not_forecast": "Reference uses future impressions and clicks. It is outcome analysis, never a predictor or ranking baseline.",
+      "limitations": [
+        "The common-CTR independent-click model may fail under temporal dependence, changing query mix, seasonality or heterogeneous exposure.",
+        "Complete-case retention must be ignorable under this conditional reference; outcome-dependent observation can invalidate it.",
+        "Other eligibility/arm membership is treated as fixed under the reference.",
+        "Total-click restriction uses future counts and does not redefine the main prediction population.",
+        "No false-positive fraction, equivalence, calibrated hypothesis test, confidence interval or causal attribution follows.",
+        "Arms overlap and monthly pages/clients repeat; do not pool them as independent evidence."
+      ]
+    },
+    "paired_diagnostic_protocol": {
+      "version": "fix07-v1",
+      "status": "exploratory_paired_diagnostic_after_Fix06_review",
+      "population": "Unchanged Fix05 known-client as-of eligible frames; no total-click cap or future-outcome filtering.",
+      "origins": [
+        "2026-02-01",
+        "2026-03-01",
+        "2026-04-01",
+        "2026-05-01"
+      ],
+      "budget": 50,
+      "pairs": [
+        [
+          "Logistic Regression",
+          "Prior CTR"
+        ],
+        [
+          "Logistic Regression",
+          "Visible pooled-CTR excess"
+        ]
+      ],
+      "replay": "Four fits of unchanged LR settings recover the original predictions. Require exact prediction hashes for LR, prior CTR and pooled CTR excess.",
+      "models": "No new candidate, tuning or Random-Forest fit. All eight original Fix05 results remain retained.",
+      "tie_policy": "Stable descending scores in original canonical client/content order.",
+      "pair_bound": "Let d be known-positive A-only minus B-only. Bounds on P50(A)-P50(B) are (d-unknown_B_only)/50 and (d+unknown_A_only)/50.",
+      "overlap": "Shared pages, including shared unknown outcomes, cancel exactly in a paired difference.",
+      "client_influence": "Delete each eligible client once, rerank fixed predictions on remaining pages at the same K. Do not refit after deletion.",
+      "limitations": [
+        "Missing-data bounds apply to these finite queues under the frozen tie policy; they are not confidence intervals.",
+        "Client deletion measures evaluation-portfolio sensitivity, not uncertainty of training or unseen-client model performance.",
+        "Repeated clients/pages and only two later periods limit generalization. No iid tests or bootstrap confidence intervals.",
+        "Diagnostic comparisons are exploratory, not a new blind confirmation or a change of the primary prediction task.",
+        "Counterfactual missing labels may have additional unmodeled constraints; reported bounds allow any binary labels for exclusive unknowns.",
+        "No warehouse query or June access."
+      ]
+    },
+    "june_read": false,
+    "june_prior_user_exposure": "uncertain",
+    "purpose": "Reproduce repaired February-May analyses without continuation-cell dependencies.",
+    "interpretation": "No blind-test, causal, equivalence or population-wide ML-failure claim."
+  },
+  "protocol_sha256": "459243acc0077e1883a9b75c48e7b6a971c5c33242315cbd7d69e19d75352ea6",
+  "created_utc": "2026-11-04T07:43:59.080584+00:00",
+  "implementation_sha256": "b8f92f0439c3d0b53e984a59cde640735a17aaca78bdbc02f20828e6ac18c71d"
+}

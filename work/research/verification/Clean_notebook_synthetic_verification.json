@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "notebook_code_cells_executed": 11,
+  "scored_arms": 10,
+  "count_reference_rows": 10,
+  "paired_comparisons": 8,
+  "june_access": false,
+  "warehouse_access": false,
+  "private_identifiers_exported": false,
+  "cached_rerun_without_remote_access": "passed",
+  "out_of_scope_and_bad_checksum_rejection": "passed",
+  "runtime_seconds": 22.48,
+  "implementation_sha256": "b8f92f0439c3d0b53e984a59cde640735a17aaca78bdbc02f20828e6ac18c71d"
+}

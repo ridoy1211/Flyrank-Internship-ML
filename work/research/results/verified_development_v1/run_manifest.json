@@ -1,0 +1,88 @@
+{
+  "status": "complete",
+  "protocol_sha256": "459243acc0077e1883a9b75c48e7b6a971c5c33242315cbd7d69e19d75352ea6",
+  "execution": {
+    "mode": "user_colab_warehouse",
+    "implementation_sha256": "b8f92f0439c3d0b53e984a59cde640735a17aaca78bdbc02f20828e6ac18c71d",
+    "extractor_sha256": "f7dca08b36ac637ca8ea9c8c56f0184ccd234e8d6e3699311ae58cc4199f8974",
+    "source": {
+      "protocol_sha256": "fa08ab634857e99ecdd9b194c93105795258b31ddaed49454c55f2d8a478e0a8",
+      "implementation_sha256": "7b1c93304051641d59bd35b7fcb8bfb5dc85c54571b36c4736eb41453d1e71cd",
+      "source_months": [
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05"
+      ],
+      "dataset_revision": "50cbf7c3909d07be4d1b5906b4d09e882e5acbf2",
+      "kind": "combined_verified_windows",
+      "month_checkpoints": [
+        {
+          "source_month": "2025-10",
+          "sha256": "cf6aee31424f5c15c9344ec4d940248a63c2d4a7c6b271490f8319c2768a80bf"
+        },
+        {
+          "source_month": "2025-11",
+          "sha256": "e190ec31cab1f2cf5d90e8eec76abe99c8dee12a235acd12d6b96db518c0ed1a"
+        },
+        {
+          "source_month": "2025-12",
+          "sha256": "2fdc026461d95a091925ca67bcbb5710293ca6090df2d93569c7e56d38ff02cf"
+        },
+        {
+          "source_month": "2026-01",
+          "sha256": "4d734e49918e6eeb5c598c9b0dac7add6bcdee9b083f52d35bbd8edc0ddd2ccb"
+        },
+        {
+          "source_month": "2026-02",
+          "sha256": "bf711046881a0acfd47d7227e0fd40cb2c001129315200c74fed5570f0e89e79"
+        },
+        {
+          "source_month": "2026-03",
+          "sha256": "98f8b75714aa21d5184c5369b9a78bf2f03356749718e289ebc50e4b42fdd4c7"
+        },
+        {
+          "source_month": "2026-04",
+          "sha256": "1f15f45ddc14ed26f4b647ddfecfb9de6f30da75c9726803bf1d91288bf54faf"
+        },
+        {
+          "source_month": "2026-05",
+          "sha256": "655fa8eb1ef0d0de4c4839ce0ae11aef224d799a4f12f0e0224f9e97fa4d3eac"
+        }
+      ],
+      "sha256": "f85b104bc9281ee54903c025a5c835699dc98a8c5afd02f72e669594f09d2d4c",
+      "n_aggregate_rows": null
+    },
+    "versions": {
+      "numpy": "2.2.6",
+      "pandas": "2.2.3",
+      "scipy": "1.16.3",
+      "scikit-learn": "1.7.2",
+      "matplotlib": "3.10.7",
+      "duckdb": "1.4.1",
+      "huggingface_hub": "1.0.1"
+    },
+    "python": "3.13.18",
+    "memory_settings": {
+      "duckdb_memory_limit_mib": 4091,
+      "threads": 1,
+      "preserve_insertion_order": false,
+      "available_memory_bytes_at_configuration": 10726563840
+    },
+    "june_read": false,
+    "raw_identifiers_or_scores_exported": false
+  },
+  "files": {
+    "chronological_validation.json": "1e707a3055a2c2c3a49b0960fe74aa4e957192e6c212d50ae7fec8504f7c90c1",
+    "count_noise_audit.json": "ab75c32c46b44062217c27aa78b4e144aadd5d5317dfbe8751761935e4a692b7",
+    "paired_queue_audit.json": "93c6fb3564db69f6a1b8b7c61aef53892231a1839d5e538338d5b150499f6496",
+    "protocol.json": "776d4065c4d0b12d7f6bc293d75a726c6d62537da0f80657fded79cd83485ad6"
+  },
+  "scored_arms": 12,
+  "count_reference_rows": 12,
+  "paired_comparisons": 8
+}
