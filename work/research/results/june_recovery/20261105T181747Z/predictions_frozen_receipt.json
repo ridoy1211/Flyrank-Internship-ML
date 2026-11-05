@@ -1,0 +1,291 @@
+{
+  "protocol_sha256": "cfbee182ac361efe2b932d9131f18c62dcb2694e3038a2ff4234df018ecf4c07",
+  "implementation_sha256": "39b0eccfc593ef6970e19ec3519fd6dad70e03bf9fae96b092542d0a5db4d984",
+  "historical_cache_sha256": "f85b104bc9281ee54903c025a5c835699dc98a8c5afd02f72e669594f09d2d4c",
+  "dataset_revision": "50cbf7c3909d07be4d1b5906b4d09e882e5acbf2",
+  "execution_recovery_sha256": "ca981a0fb289ca996c417ce7ee14568e5b2a19a412ccde07fea18cfb6b9fa3ef",
+  "runtime_reset_rerun": true,
+  "kind": "june_predictions_before_outcomes",
+  "training_origins": [
+    "2026-03-01",
+    "2026-04-01",
+    "2026-05-01"
+  ],
+  "candidate_feature_sha256": "e07ad7c4dbab02d0928e4864ac3ace0dcd34303404c5464f27b026abc60546d4",
+  "arm_inputs": [
+    {
+      "arm": "known_clients",
+      "training": {
+        "n_page_episodes": 118253,
+        "n_clients": 37,
+        "n_labelable": 118253,
+        "n_positive": 9022,
+        "n_clients_with_at_least_50_pages": 24,
+        "largest_two_client_fraction": 0.4774424327501205
+      },
+      "n_as_of_candidates": 54046,
+      "candidate_feature_sha256": "0986636885c9b4044c50353f6e07270a1e8f6ff4e3f7e0f8f81df38e36ddcf8e",
+      "training_frame_sha256": "431c3d9554372d026d209355b506cab899b15844fcc9c22fe0d0e81c819bb587",
+      "status": "scored"
+    },
+    {
+      "arm": "naturally_unseen_clients",
+      "training": {
+        "n_page_episodes": 118253,
+        "n_clients": 37,
+        "n_labelable": 118253,
+        "n_positive": 9022,
+        "n_clients_with_at_least_50_pages": 24,
+        "largest_two_client_fraction": 0.4774424327501205
+      },
+      "n_as_of_candidates": 1911,
+      "candidate_feature_sha256": "6bcd02e6f2ed9cc42af5cebe790045d42038d3f4e2672fb006a716cf7f2ff2f4",
+      "training_frame_sha256": "431c3d9554372d026d209355b506cab899b15844fcc9c22fe0d0e81c819bb587",
+      "status": "scored"
+    },
+    {
+      "arm": "hash_heldout_clients",
+      "training": {
+        "n_page_episodes": 82688,
+        "n_clients": 30,
+        "n_labelable": 82688,
+        "n_positive": 5903,
+        "n_clients_with_at_least_50_pages": 19,
+        "largest_two_client_fraction": 0.5448553599071208
+      },
+      "n_as_of_candidates": 16710,
+      "candidate_feature_sha256": "84221d651a33f183edb595aa3d1a82085b96a9dd8d940499fc41b2637345408b",
+      "training_frame_sha256": "ed4325ad1bcf4516c281e44777f9ad9214164e462130ebd008f4488d43f60514",
+      "status": "scored"
+    }
+  ],
+  "methods": [
+    "Baseline rule",
+    "Logistic Regression",
+    "Random Forest",
+    "Prior clicks",
+    "Prior impressions",
+    "Prior CTR",
+    "Visible pooled-CTR shortfall",
+    "Visible pooled-CTR excess"
+  ],
+  "versions": {
+    "numpy": "2.2.6",
+    "pandas": "2.2.3",
+    "scipy": "1.16.3",
+    "scikit-learn": "1.7.2",
+    "matplotlib": "3.10.7",
+    "duckdb": "1.4.1",
+    "huggingface_hub": "1.0.1"
+  },
+  "june_outcomes_accessed_before_prediction_freeze": false,
+  "arms": [
+    {
+      "arm": "known_clients",
+      "training": {
+        "n_page_episodes": 118253,
+        "n_clients": 37,
+        "n_labelable": 118253,
+        "n_positive": 9022,
+        "n_clients_with_at_least_50_pages": 24,
+        "largest_two_client_fraction": 0.4774424327501205
+      },
+      "n_as_of_candidates": 54046,
+      "candidate_feature_sha256": "0986636885c9b4044c50353f6e07270a1e8f6ff4e3f7e0f8f81df38e36ddcf8e",
+      "training_frame_sha256": "431c3d9554372d026d209355b506cab899b15844fcc9c22fe0d0e81c819bb587",
+      "status": "scored",
+      "reference_audit": {
+        "n_evaluation_pages": 54046,
+        "n_unseen_bucket_global_fallback": 0,
+        "training_global_ctr": 0.3078076589015377,
+        "training_visibility_threshold": 2201.0,
+        "training_bucket_support": [
+          {
+            "position_bucket": "(-0.001, 3.0]",
+            "n_pages": 13837,
+            "impressions": 69741718.0,
+            "clicks": 281870.0,
+            "pooled_ctr": 0.4041626849513515
+          },
+          {
+            "position_bucket": "(3.0, 10.0]",
+            "n_pages": 66844,
+            "impressions": 325781390.0,
+            "clicks": 1057872.0,
+            "pooled_ctr": 0.3247183640538829
+          },
+          {
+            "position_bucket": "(10.0, 20.0]",
+            "n_pages": 20298,
+            "impressions": 57831150.0,
+            "clicks": 205726.0,
+            "pooled_ctr": 0.35573561999026476
+          },
+          {
+            "position_bucket": "(20.0, 50.0]",
+            "n_pages": 16908,
+            "impressions": 96496976.0,
+            "clicks": 149348.0,
+            "pooled_ctr": 0.15476961682198206
+          },
+          {
+            "position_bucket": "(50.0, inf]",
+            "n_pages": 366,
+            "impressions": 1012252.0,
+            "clicks": 784.0,
+            "pooled_ctr": 0.07745106949652854
+          }
+        ]
+      },
+      "prediction_sha256": {
+        "Baseline rule": "ce5bc0187fcb0838dbcfb43e3775b717a5e4790686cd257ce350185de6c27562",
+        "Logistic Regression": "12296db6d2977433e1beac63876a1793f59778cfa01f2e5533c9da24406dad86",
+        "Random Forest": "20070d414fa5ba7182b2b9a7539c74dabc126dc5506b13ba08ca1eee832749c7",
+        "Prior clicks": "e226ceb662bc0ce4952e392a5a4501f6663ce94896c397dde5b3858e72bd2f75",
+        "Prior impressions": "67e3129afb5a7342918498b95355f7048b848ed86ec96e3f24c31fd211a1048e",
+        "Prior CTR": "eae110438d1e1489632230ebe053d7db8b542cfbf497ae68af46cb1a5b996856",
+        "Visible pooled-CTR shortfall": "08731872308c5b7652b6afebb77fbe9868aad325270bd2d415d87a1a99dc1f5a",
+        "Visible pooled-CTR excess": "2c4baf4d72233a5e4810566624de38161d9284c3d87b9a31cbd28f075fb848d0"
+      }
+    },
+    {
+      "arm": "naturally_unseen_clients",
+      "training": {
+        "n_page_episodes": 118253,
+        "n_clients": 37,
+        "n_labelable": 118253,
+        "n_positive": 9022,
+        "n_clients_with_at_least_50_pages": 24,
+        "largest_two_client_fraction": 0.4774424327501205
+      },
+      "n_as_of_candidates": 1911,
+      "candidate_feature_sha256": "6bcd02e6f2ed9cc42af5cebe790045d42038d3f4e2672fb006a716cf7f2ff2f4",
+      "training_frame_sha256": "431c3d9554372d026d209355b506cab899b15844fcc9c22fe0d0e81c819bb587",
+      "status": "scored",
+      "reference_audit": {
+        "n_evaluation_pages": 1911,
+        "n_unseen_bucket_global_fallback": 0,
+        "training_global_ctr": 0.3078076589015377,
+        "training_visibility_threshold": 2201.0,
+        "training_bucket_support": [
+          {
+            "position_bucket": "(-0.001, 3.0]",
+            "n_pages": 13837,
+            "impressions": 69741718.0,
+            "clicks": 281870.0,
+            "pooled_ctr": 0.4041626849513515
+          },
+          {
+            "position_bucket": "(3.0, 10.0]",
+            "n_pages": 66844,
+            "impressions": 325781390.0,
+            "clicks": 1057872.0,
+            "pooled_ctr": 0.3247183640538829
+          },
+          {
+            "position_bucket": "(10.0, 20.0]",
+            "n_pages": 20298,
+            "impressions": 57831150.0,
+            "clicks": 205726.0,
+            "pooled_ctr": 0.35573561999026476
+          },
+          {
+            "position_bucket": "(20.0, 50.0]",
+            "n_pages": 16908,
+            "impressions": 96496976.0,
+            "clicks": 149348.0,
+            "pooled_ctr": 0.15476961682198206
+          },
+          {
+            "position_bucket": "(50.0, inf]",
+            "n_pages": 366,
+            "impressions": 1012252.0,
+            "clicks": 784.0,
+            "pooled_ctr": 0.07745106949652854
+          }
+        ]
+      },
+      "prediction_sha256": {
+        "Baseline rule": "ed9498d5bbb32443c7a0e4d28c2b3c8f0a3033d26e4b6d531b39e7d10397698e",
+        "Logistic Regression": "c7d35ddd68854ea41278855d9840fb2b3684cf246128f841a3e1eb07fc20d0b9",
+        "Random Forest": "cf6155b08d348daa03508c6b5883be0b0f26289bed883bb2fb132af53bc8c11e",
+        "Prior clicks": "4143aaa4fab3964b94fbc3988c9f256189d76f1960b0ddfe64139d80e741488d",
+        "Prior impressions": "db84089a7ddce8966a6f14313ecd1a1b16395ee946b297681b3c86e81deb588e",
+        "Prior CTR": "2c11f13e684391bd4fe99b576687775eee48dc201d77f0543425cc0242945c31",
+        "Visible pooled-CTR shortfall": "c8dd5251c79616f298c1b670cefc71d45be428a42a015aaf5b827d322311357c",
+        "Visible pooled-CTR excess": "35e2173740da91b762b995ce9436504b4268b49a0bc903e0a4916442ce7a05c4"
+      }
+    },
+    {
+      "arm": "hash_heldout_clients",
+      "training": {
+        "n_page_episodes": 82688,
+        "n_clients": 30,
+        "n_labelable": 82688,
+        "n_positive": 5903,
+        "n_clients_with_at_least_50_pages": 19,
+        "largest_two_client_fraction": 0.5448553599071208
+      },
+      "n_as_of_candidates": 16710,
+      "candidate_feature_sha256": "84221d651a33f183edb595aa3d1a82085b96a9dd8d940499fc41b2637345408b",
+      "training_frame_sha256": "ed4325ad1bcf4516c281e44777f9ad9214164e462130ebd008f4488d43f60514",
+      "status": "scored",
+      "reference_audit": {
+        "n_evaluation_pages": 16710,
+        "n_unseen_bucket_global_fallback": 0,
+        "training_global_ctr": 0.3033417382683752,
+        "training_visibility_threshold": 2212.0,
+        "training_bucket_support": [
+          {
+            "position_bucket": "(-0.001, 3.0]",
+            "n_pages": 7851,
+            "impressions": 36934118.0,
+            "clicks": 133247.0,
+            "pooled_ctr": 0.3607694110903095
+          },
+          {
+            "position_bucket": "(3.0, 10.0]",
+            "n_pages": 41396,
+            "impressions": 180786218.0,
+            "clicks": 636201.0,
+            "pooled_ctr": 0.35190790926330456
+          },
+          {
+            "position_bucket": "(10.0, 20.0]",
+            "n_pages": 17232,
+            "impressions": 53634539.0,
+            "clicks": 197496.0,
+            "pooled_ctr": 0.3682254078850198
+          },
+          {
+            "position_bucket": "(20.0, 50.0]",
+            "n_pages": 15904,
+            "impressions": 95317889.0,
+            "clicks": 147538.0,
+            "pooled_ctr": 0.15478521560627512
+          },
+          {
+            "position_bucket": "(50.0, inf]",
+            "n_pages": 305,
+            "impressions": 960456.0,
+            "clicks": 703.0,
+            "pooled_ctr": 0.07319439932698635
+          }
+        ]
+      },
+      "prediction_sha256": {
+        "Baseline rule": "9ecade85877a379ab190bcf53e8a495e5208f9c977b6ba0c385316326fcc8ffd",
+        "Logistic Regression": "495e9014426ef7ab01d6387a67940cabdcd63b2ece27b46f9141706d64fdc29c",
+        "Random Forest": "b82ed066a3bded58596c4a6ab19715879332a79620cf44654830028d0b9fbe07",
+        "Prior clicks": "3f7fab41b8722df4d8bb5446a304fdedb2dc1d26c9a6a8592f7198dc818e9767",
+        "Prior impressions": "5053e0df2259f4052d64fd32730cd337247f17ce6fad4422064734fd9505c5bb",
+        "Prior CTR": "05687dfb1d47fa68c02f67e74296fe2e081dfdb2ee8726ad828ee0ace7d990e8",
+        "Visible pooled-CTR shortfall": "1acf0f48fd7f0a133538f82b63d4bdcdfd7b158bc8e6a98a2d54256862bcf8a5",
+        "Visible pooled-CTR excess": "3c7b7a6b8d63d0f4c50ca7b27106f2b47e11e533d3bb7c7db3e4141ca5ca8c95"
+      }
+    }
+  ],
+  "frozen_utc": "2026-11-05T18:24:04.839845+00:00",
+  "sha256": "842237b50ea8fff216d2edc793a49649b37fe7125d06fc5d4ae9ca887c3fc116",
+  "n_aggregate_rows": null
+}

@@ -21,6 +21,8 @@ For a local Python 3.12 environment, install with `python -m pip install -r work
 
 The primary precision denominator is the actual as-of review budget, including unknown outcomes. Missing-label and paired bounds are logical bounds for fixed queues, not confidence intervals. Complete-case ranking scores are secondary. Client deletion uses fixed predictions and measures portfolio sensitivity, not uncertainty of refitting or unseen-client performance.
 
-## Remaining work
+## Current status
 
-The separate June protocol records prior exposure as uncertain. June can be an additional retrospective evaluation. It cannot establish an untouched or prospective test. Review and version its protocol before access, implement and test the separate June runner, then execute once with the same ranking rules and report all outcomes. Afterward revise the manuscript, tables, abstract and website together so that they describe the same analysis.
+June recovery is complete as additional retrospective validation. The original execution stopped on source defects outside its candidates; the expired VM's private checkpoints were lost, so a disclosed rerun used the unchanged settings and protocol. See `JUNE_README.md` and `results/june_recovery/20261105T181747Z/`. It is not a blind or prospective test.
+
+The capstone report, paper page and `work/notebooks/capstone.ipynb` now describe the corrected February–June evidence. The capstone notebook reproduces tables from verified public aggregates; these computation notebooks document the underlying warehouse runs. Publication to GitHub Pages requires the reviewed revision to be committed and deployed together.

@@ -1,0 +1,177 @@
+{
+  "protocol": {
+    "version": "june-count-reference-v1",
+    "status": "secondary_descriptive_diagnostic_after_frozen_June_prediction",
+    "purpose": "Describe raw event counts against a simple stationary click-allocation reference.",
+    "source": "Historical training plus June feature/outcome aggregates under the June addendum; never used for prediction.",
+    "population": "Observed members of each June fixed as-of arm, restricted to total clicks <=200.",
+    "cap_reason": "Predeclared computational scope for the low-total-count diagnostic; total clicks are conditioned on by the reference.",
+    "null": "Independent Bernoulli clicks per impression with one common page CTR in the two windows.",
+    "conditioning": "Both impression totals, the combined click total, and prior clicks>0.",
+    "reference": "Future clicks X ~ Hypergeometric(M=I0+I1,n=C0+C1,N=I1), truncated to X<=C0+C1-1.",
+    "signature_probability": "If stable impressions, F(floor(17*(C0+C1)/37))/F(C0+C1-1); otherwise 0.",
+    "computation": "Finite-support hypergeometric weights from log-ratio recurrence; batches of at most 4096 rows.",
+    "reporting": "Observed signatures beside sum of conditional probabilities on exactly the same modeled subset.",
+    "prior_click_bands": "Observed counts only. No reference expectation is reported by observed prior-click band.",
+    "not_forecast": "Reference uses future impressions and clicks. It is outcome analysis, never a predictor or ranking baseline.",
+    "limitations": [
+      "The common-CTR independent-click model may fail under temporal dependence, changing query mix, seasonality or heterogeneous exposure.",
+      "Complete-case retention must be ignorable under this conditional reference; outcome-dependent observation can invalidate it.",
+      "Other eligibility/arm membership is treated as fixed under the reference.",
+      "Total-click restriction uses future counts and does not redefine the main prediction population.",
+      "No false-positive fraction, equivalence, calibrated hypothesis test, confidence interval or causal attribution follows.",
+      "Arms overlap and monthly pages/clients repeat; do not pool them as independent evidence."
+    ]
+  },
+  "protocol_sha256": "7c0e0da4f45c2fd540aa535388686ce1a8ba0f288b8676e39bf03363f8a6066e",
+  "source_protocol_sha256": "cfbee182ac361efe2b932d9131f18c62dcb2694e3038a2ff4234df018ecf4c07",
+  "rows": [
+    {
+      "origin": "2026-06-01",
+      "arm": "known_clients",
+      "full_arm_observation": {
+        "n_pages": 54046,
+        "n_observed": 46096,
+        "n_unknown": 7950,
+        "observed_positive_count": 2304,
+        "observed_event_rate": 0.04998264491496009
+      },
+      "reference_subset": {
+        "n_modeled_pages": 45339,
+        "n_observed_pages_excluded_total_clicks_gt_200": 757,
+        "fraction_of_observed_pages_modeled": 0.9835777507809789,
+        "n_stable_impression_pages": 4773,
+        "observed_signature_count": 2203,
+        "stationary_reference_expected_signature_count": 1931.9394535236731,
+        "observed_minus_reference_expected_count_descriptive": 271.06054647632686,
+        "observed_signature_rate": 0.04858951454597587,
+        "stationary_reference_expected_signature_rate": 0.0426109851016492
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 28756,
+          "n_observed": 21675,
+          "n_unknown": 7081,
+          "observed_positive_count": 741,
+          "observed_event_rate": 0.034186851211072664
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 17124,
+          "n_observed": 16320,
+          "n_unknown": 804,
+          "observed_positive_count": 848,
+          "observed_event_rate": 0.05196078431372549
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 8166,
+          "n_observed": 8101,
+          "n_unknown": 65,
+          "observed_positive_count": 715,
+          "observed_event_rate": 0.08826070855449944
+        }
+      ],
+      "reference_input_sha256": "1dae23d25b58c1a0fd3b2b1a1dd40f210a486f2f34ab93ae5d8b8223596c42f5"
+    },
+    {
+      "origin": "2026-06-01",
+      "arm": "naturally_unseen_clients",
+      "full_arm_observation": {
+        "n_pages": 1911,
+        "n_observed": 1727,
+        "n_unknown": 184,
+        "observed_positive_count": 99,
+        "observed_event_rate": 0.05732484076433121
+      },
+      "reference_subset": {
+        "n_modeled_pages": 1651,
+        "n_observed_pages_excluded_total_clicks_gt_200": 76,
+        "fraction_of_observed_pages_modeled": 0.9559930515344528,
+        "n_stable_impression_pages": 194,
+        "observed_signature_count": 97,
+        "stationary_reference_expected_signature_count": 76.36451238182585,
+        "observed_minus_reference_expected_count_descriptive": 20.635487618174153,
+        "observed_signature_rate": 0.05875227135069655,
+        "stationary_reference_expected_signature_rate": 0.046253490237326375
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 714,
+          "n_observed": 555,
+          "n_unknown": 159,
+          "observed_positive_count": 28,
+          "observed_event_rate": 0.05045045045045045
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 735,
+          "n_observed": 710,
+          "n_unknown": 25,
+          "observed_positive_count": 46,
+          "observed_event_rate": 0.0647887323943662
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 462,
+          "n_observed": 462,
+          "n_unknown": 0,
+          "observed_positive_count": 25,
+          "observed_event_rate": 0.05411255411255411
+        }
+      ],
+      "reference_input_sha256": "6d8be1ac986be78b30b4a286529d68211762b1e356e9572f559e9278e4d2e10e"
+    },
+    {
+      "origin": "2026-06-01",
+      "arm": "hash_heldout_clients",
+      "full_arm_observation": {
+        "n_pages": 16710,
+        "n_observed": 14826,
+        "n_unknown": 1884,
+        "observed_positive_count": 942,
+        "observed_event_rate": 0.06353702954269526
+      },
+      "reference_subset": {
+        "n_modeled_pages": 14462,
+        "n_observed_pages_excluded_total_clicks_gt_200": 364,
+        "fraction_of_observed_pages_modeled": 0.9754485363550519,
+        "n_stable_impression_pages": 1639,
+        "observed_signature_count": 877,
+        "stationary_reference_expected_signature_count": 645.9233417654121,
+        "observed_minus_reference_expected_count_descriptive": 231.07665823458785,
+        "observed_signature_rate": 0.060641681648458026,
+        "stationary_reference_expected_signature_rate": 0.04466348650016679
+      },
+      "prior_click_bands_observed_only": [
+        {
+          "prior_click_band": "1-4",
+          "n_pages": 8481,
+          "n_observed": 6716,
+          "n_unknown": 1765,
+          "observed_positive_count": 236,
+          "observed_event_rate": 0.03513996426444312
+        },
+        {
+          "prior_click_band": "5-19",
+          "n_pages": 5276,
+          "n_observed": 5162,
+          "n_unknown": 114,
+          "observed_positive_count": 328,
+          "observed_event_rate": 0.063541263076327
+        },
+        {
+          "prior_click_band": "20+",
+          "n_pages": 2953,
+          "n_observed": 2948,
+          "n_unknown": 5,
+          "observed_positive_count": 378,
+          "observed_event_rate": 0.1282225237449118
+        }
+      ],
+      "reference_input_sha256": "33d467b3c6aa4f9b33e9166bbf0f7100f38248c548a0d9c951c05f16329509cb"
+    }
+  ]
+}

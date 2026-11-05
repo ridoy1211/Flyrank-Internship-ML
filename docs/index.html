@@ -1,17 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Great Decoupling: Detecting Silent Click Loss in Search Content</title>
-<meta property="og:title" content=" The Great Decoupling: Detecting Silent Click Loss in Search Content">
-<meta property="og:description" content="A Random Forest classifier trained on 123,683 real pages from a 79M-row production search warehouse, beating a transparent baseline by 1.93x precision@50 on clients never seen in training.">
-<meta property="og:image" content="https://ridoy1211.github.io/Flyrank-Internship-ML/img/model_vs_baseline.png">
-<meta property="og:type" content="article">
-
-<style>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Prioritizing pages for click-decline review: learned scores versus simple rules</title><meta property="og:title" content="Prioritizing pages for click-decline review: learned scores versus simple rules"><meta property="og:description" content="Retrospective comparison of learned and simple page-review rankings, with time-based validation and unknown outcomes disclosed."><meta property="og:type" content="article"><style>
    * { box-sizing: border-box; }
-  body { font-family: Georgia, 'Times New Roman', serif; max-width: 780px; margin: 0 auto; padding: 40px 20px 80px; color: #1a1a1a; line-height: 1.65; }
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 1000px; margin: 0 auto; padding: 40px 20px 80px; color: #1a1a1a; line-height: 1.65; }
   h1 { font-size: 2rem; line-height: 1.3; margin-bottom: 0.2em; }
   .byline { color: #666; font-style: italic; margin-bottom: 2.5em; }
   h2 { font-size: 1.4rem; margin-top: 2.5em; border-bottom: 2px solid #2E4057; padding-bottom: 0.3em; }
@@ -62,244 +52,63 @@
     th, td { padding: 6px 8px; }
   }
  
-</style>
-</head>
-<body>
-
-<h1>The Great Decoupling: Detecting Silent Click Loss in Search Content</h1>
-<p class="byline">Ridoy Hasan &middot; FlyRank ML Engineering Internship &middot; Capstone, 2026</p>
-
-<div class="abstract">
- <p><strong>Abstract.</strong> Since AI Overviews became a standard feature of Google Search, a page
-can hold steady impressions and ranking position while its clicks quietly decline. FlyRank's
-content strategists have no name or detection method for this pattern in their existing tooling,
-even though industry research now refers to it as the "Great Decoupling" (Law &amp; Guan, 2026;
-Chapekis et al., 2025). This paper asks whether the pattern can be identified early enough, using
-only observable search signals, for a strategist to act on it before the loss shows up in
-standard reporting. We built two systems on 123,683 real content pages drawn from FlyRank's
-79-million-row production search warehouse: a transparent, hand-written baseline rule, and a
-Random Forest classifier trained only on February 2026 signals and validated against March 2026
-outcomes on a client-grouped holdout split. The baseline did not beat random selection on this
-split (precision@50 of 0.00). The Random Forest reached a 1.93x lift over the base rate
-(precision@50 of 0.06, 95% CI [0.00, 0.16], ROC AUC 0.81). We also report a negative result: a
-candidate content-freshness feature was tested and dropped after we found its recorded dates fell
-mostly after the decision point it was meant to precede, a leakage risk caught during validation
-rather than discovered later. The output is a ranked, human-reviewed action playbook for
-triaging which client pages need review first.</p>
-</div>
-
-
-<h2>Introduction</h2>
-<p class="justified"><p>FlyRank's strategists watch impressions, average position, and sessions to decide where to
-spend limited review time each week. That habit has a specific blind spot. Ahrefs' most recent
-keyword study found that pages appearing alongside an AI Overview lost 58% of their
-click-through rate compared to similar pages without one, up from 34.5% a year earlier (Law &amp;
-Guan, 2026). Pew Research Center reached a similar conclusion from a different angle, tracking
-the actual browsing behavior of 900 U.S. adults rather than keyword-level metrics: users clicked
-a traditional search result only 8% of the time when an AI summary was present, against 15%
-without one (Chapekis et al., 2025). Put plainly, a page can look completely healthy on the
-numbers a strategist already watches while its real value to the client erodes underneath it.</p>
-<p>This was not a hypothetical concern invented for this project. It is the reason this lane was
-chosen in Week 1 of the internship, after the same impressions-flat, clicks-down signature turned
-up in FlyRank's own anonymized starter sample before the full warehouse was ever queried. The
-question this paper answers is narrower than the industry statistics above: given only what was
-knowable about a page in a given month, can a model flag it as being at risk before a strategist
-would otherwise notice, and does that model beat a simple rule a person could apply by hand?</p></p>
-
-
-<h2>Data</h2>
-<p><strong>Release.</strong> FlyRank/internship-warehouse on Hugging Face (gated access), build
-<code>flyrank_pseudonymized_warehouse_release_v20260703</code> (FlyRank, 2026).</p>
-<p><strong>Tables.</strong> <code>fact_content_daily_performance</code>, restricted to the
-February and March 2026 partitions, and <code>dim_content</code> for two static fields
-(<code>content_type</code>, <code>main_intent</code>).</p>
-<p><strong>Date windows.</strong> February 1&ndash;28, 2026 supplies every feature. March
-1&ndash;31, 2026 supplies the outcome used to build the label. Both are mid-panel months. The
-sealed final month (June 2026) is never touched, since the program reserves it as a held-out test
-period.</p>
-<p><strong>Excluded on purpose:</strong></p>
-<ul>
-<li><code>fact_content_query_90d</code>, whose window overlaps recent months. Using it here would
-risk the exact leakage pattern this paper spends a whole section checking for.</li>
-<li>GA4 columns, unnecessary for a signal built entirely from Search Console metrics.</li>
-<li>Any FlyRank product decision flags. These are not shipped in this dataset in the first
-place, so nothing had to be manually removed.</li>
-</ul>
-<p><strong>Public safety.</strong> Every identifier in this analysis is a pseudonymized hash. No
-client name, domain, or search query appears anywhere in this paper or its supporting notebooks.</p>
-
-<h2>Methodology</h2>
-<p><strong>Label.</strong> A page is marked <code>decoupling_signature = 1</code> if its
-impressions changed by no more than &plusmn;10% between February and March while its clicks fell
-15% or more. This is a rule I defined, not an outcome FlyRank measures directly, and it is
-disclosed as a proxy throughout this paper rather than treated as ground truth.</p>
-<p><strong>Features.</strong> Six inputs, all knowable before March began:
-<code>impressions_prior30</code>, <code>clicks_prior30</code>, <code>ctr_prior30</code>,
-<code>avg_position_prior30</code>, <code>content_type</code>, <code>main_intent</code>.</p>
-<p><strong>Baseline.</strong> A hand-written rule with no fitted weights:
-<code>score = visible &times; ctr_gap_prior30</code>. A page counts as <code>visible</code> if
-its February impressions sit at or above the sample median. <code>ctr_gap_prior30</code> is the
-gap between a page's own click-through rate and the median rate for other pages at a similar
-search position, since click-through rate is known to fall with position and comparing every
-page to one flat number would obscure that.</p>
-<p><strong>Model.</strong> Logistic Regression was tried first, as the readable option for a
-yes-or-no label. A Random Forest Classifier (300 trees) was added second, specifically to test
-whether interactions between position, click-through rate, and content type contribute anything
-a linear model misses. The forest is reported below because it did.</p>
-<p><strong>Validation.</strong> A <code>GroupShuffleSplit</code> holds out 25% of clients
-entirely, so no client's pages appear in both the training and test sets. This matters here more
-than it might elsewhere: pages from the same client can share a template, an editorial team, or a
-seasonal pattern, and a plain random split would let a model quietly memorize client identity
-instead of learning something that transfers to a client it has never seen.</p>
-<p><strong>Leakage checks.</strong> Four checks were run, not assumed:</p>
-<ol>
-<li>Every feature name was audited against outcome-window and label vocabulary before training.</li>
-<li>A label-derived column (<code>clicks_last30</code>) was deliberately added back to confirm
-the audit process actually catches leakage when it is present, rather than passing by
-construction.</li>
-<li>A plain random split was compared against the grouped split on identical data, to check
-whether client identity was doing hidden work the grouped design was meant to prevent.</li>
-<li>A candidate freshness feature, <code>content_updated_date</code>, was tested and then
-dropped. Its recorded values ranged from 97 days before to 303 days after the March 31 decision
-point, with a median of 50 days after it (Figure 5). Most of what this field records happened
-after the very outcome it would have been used to predict, so it was removed rather than kept
-and rationalized.</li>
-</ol>
-
-<h2>Results</h2>
-<p>Both methods were scored on the same held-out, client-grouped test split, against the same
-label.</p>
-<table>
-<tr><th>Method</th><th>Precision@50</th><th>ROC AUC</th><th>Lift vs. base rate</th></tr>
-<tr><td>Baseline rule</td><td>0.00</td><td>0.493</td><td>0.0x</td></tr>
-<tr><td>Random Forest</td><td>0.06</td><td>0.805</td><td>1.93x</td></tr>
-</table>
-<p>Base rate on the test set: 3.11%. A 1,000-sample bootstrap over the model's precision@50
-returns a 95% interval of [0.00, 0.16].</p>
-
-<figure>
-<img src="img/model_vs_baseline.png" alt="Bar chart comparing baseline rule and Random Forest precision at 50, with base rate marked">
-<figcaption><strong>Figure 1.</strong> Precision@50 on the held-out test split. The baseline rule
-does not clear the base rate (dashed line); the Random Forest clears it by 1.93x.</figcaption>
-</figure>
-
-<p>The baseline rule caught none of its top 50 flagged pages on this split, performing at or
-below chance. The Random Forest correctly prioritized roughly 3 of its top 50 picks against the
-~1.6 expected from chance at this base rate. That gap is the clearest evidence in this paper that
-the added model complexity earned its place rather than adding noise. The confidence interval
-above is wide enough to include zero, and that is worth stating outright rather than burying: at
-K=50 against a 3% base rate, this specific point estimate carries real uncertainty, even though
-the direction of the result (model beats baseline, model beats chance) is consistent across every
-check we ran.</p>
-
-<figure>
-<img src="img/roc_pr_curves.png" alt="ROC curve and precision-recall curve for the Random Forest model">
-<figcaption><strong>Figure 2.</strong> ROC and precision-recall curves for the Random Forest on
-the held-out test set (AUC = 0.81). Both are shown together because ROC alone can look more
-favorable than it is under class imbalance; the base rate (3.1%) is marked on the
-precision-recall panel as the honest floor.</figcaption>
-</figure>
-
-<figure>
-<img src="img/score_separation.png" alt="Histogram comparing model score distributions for decoupling and non-decoupling pages">
-<figcaption><strong>Figure 3.</strong> Model score distributions by true label. The two
-distributions overlap substantially, consistent with a ranking signal rather than a clean
-separator, which is the honest way to read a 0.06 precision@50 result.</figcaption>
-</figure>
-
-<figure>
-<img src="img/feature_importance.png" alt="Bar chart of Random Forest feature importances">
-<figcaption><strong>Figure 4.</strong> Feature importance by Gini decrease. The four numeric
-search-performance signals account for nearly all of the model's decisions; the categorical
-content metadata contributes almost nothing, a finding worth testing further rather than
-assuming holds beyond this slice.</figcaption>
-</figure>
-
-<h2>Limitations and Honest Framing</h2>
-<ul>
-<li>The label is a rule I defined by comparing two months, not a business outcome FlyRank tracks
-directly. This paper ranks a pattern; it does not diagnose why any individual page shows it.</li>
-<li>Every signal comes from Google Search Console. Content quality, backlinks, and competitor
-behavior are invisible to this model.</li>
-<li>The freshness feature described in Methodology could not be used at all, for the reason
-shown in Figure 5 below, not because freshness is unimportant but because this particular field
-could not support the claim honestly.</li>
-<li>Results come from one client-grouped split over one pair of months. Nothing here has been
-tested against a different season or a client the model has never priced in at all.</li>
-</ul>
-
-<figure>
-<img src="img/leakage_catch.png" alt="Histogram of days since content update relative to the decision point, most values falling after it">
-<figcaption><strong>Figure 5.</strong> Distribution of <code>content_updated_date</code> relative
-to the March 31 decision point. Most recorded updates (right of the dashed line) happened after
-the window this feature was meant to inform, which is why it was excluded rather than reported
-as a finding.</figcaption>
-</figure>
-
-<h2>Ranked Recommendations</h2>
-<p>Each page falls into one of three archetypes, combining the model's score with a simple
-visibility check:</p>
-<table>
-<tr><th>Archetype</th><th>Count</th><th>% of pages</th><th>Reason code</th><th>Action</th></tr>
-<tr><td>High-risk</td><td>27,234</td><td>22.0%</td><td>model_flagged_decoupling_risk</td><td>REVIEW_CONTENT_QUALITY</td></tr>
-<tr><td>Low-risk + visible</td><td>37,278</td><td>30.1%</td><td>stable_visible_asset</td><td>PROTECT_MONITOR</td></tr>
-<tr><td>Low-risk + low-visibility</td><td>59,171</td><td>47.8%</td><td>low_priority</td><td>NO_ACTION</td></tr>
-</table>
-
-<figure>
-<img src="img/archetype_distribution.png" alt="Bar chart of page counts by archetype">
-<figcaption><strong>Figure 6.</strong> Page counts by archetype. The High-risk tier is the
-intended review queue: 27,234 pages, still too many to review one by one in a single pass.</figcaption>
-</figure>
-
-<p>In practice, a strategist would rank within the High-risk tier by raw model score and work
-through the top 50&ndash;200 at a time rather than the full 27,234 at once. None of this output
-should be automated. It should not drive auto-published edits or auto-redirects, and it should
-not be used to evaluate an individual writer's performance, since the label reflects
-portfolio-wide search dynamics that sit well outside any one person's control.</p>
-
-<h2>Reproducibility</h2>
-<p>Full code, notebooks, and commit history: <a href="https://github.com/ridoy1211/Flyrank-Internship-ML">github.com/ridoy1211/Flyrank-Internship-ML</a>.
-Random seed 42 is fixed throughout. One caveat worth stating plainly: the warehouse query behind
-this analysis has no explicit row ordering, so the exact precision@50 point estimate can shift
-slightly between runs even with a fixed seed, because the client-grouped split depends on row
-order. ROC AUC and the qualitative result (model beats baseline, model beats chance) are stable
-across the reruns we performed; the K=50 point estimate is not, which is part of why we report a
-confidence interval instead of a bare number.</p>
-<ul>
-<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w01_research_question.ipynb">Week 1 &mdash; Research question</a></li>
-<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w02_ml_task_framing.ipynb">Week 2 &mdash; Task framing</a></li>
-<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w03_data_contract.ipynb">Week 3 &mdash; Data contract</a></li>
-<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w04_baseline_score.ipynb">Week 4 &mdash; Baseline</a></li>
-<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w05_model.ipynb">Week 5 &mdash; Model</a></li>
-<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w06_validation_audit.ipynb">Week 6 &mdash; Validation audit</a></li>
-<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/w07_action_playbook.ipynb">Week 7 &mdash; Action playbook</a></li>
-<li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/capstone.ipynb">Capstone notebook</a></li>
-</ul>
-
-<h2>References</h2>
-<div class="refs">
-<p>Chapekis, A., Lieb, A., Shah, S., &amp; Smith, A. (2025, July 22). <em>Google users are less
-likely to click on links when an AI summary appears in the results</em>. Pew Research Center.
-<a href="https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/">pewresearch.org/short-reads/2025/07/22</a></p>
-
-<p>FlyRank. (2026, March). <em>The State of AI-Driven SEO</em> [Internal research report].
-Referenced in this internship's Week 6 methodology-audit assignment; not independently
-published.</p>
-
-<p>FlyRank. (2026). <em>FlyRank/internship-warehouse</em> [Data set]. Hugging Face. Build
-flyrank_pseudonymized_warehouse_release_v20260703.
-<a href="https://huggingface.co/datasets/FlyRank/internship-warehouse">huggingface.co/datasets/FlyRank/internship-warehouse</a></p>
-
-<p>Law, R., &amp; Guan, X. (2026). <em>AI Overviews reduce clicks by 34.5%</em> [Updated 2026:
-58%]. Ahrefs Blog.
-<a href="https://ahrefs.com/blog/ai-overviews-reduce-clicks/">ahrefs.com/blog/ai-overviews-reduce-clicks</a></p>
-</div>
-
-<div class="ack">
-<strong>Acknowledgments and Data Credit.</strong> Built on the FlyRank ML Internship dataset
-&mdash; <a href="https://flyrank.ai">flyrank.ai</a>.
-</div>
-
-</body>
-</html>
+</style></head><body>
+<h1>Prioritizing pages for click-decline review: learned scores versus simple rules</h1>
+<p class="byline">Ridoy Hasan · FlyRank ML Internship · Updated 6 November 2026</p>
+<div class="abstract"><p><strong>Abstract.</strong> Can a learned score improve which pages a content strategist reviews first for a later click decline? We compared fixed logistic regression and random forest models with six simple ranking rules using four prior search measurements, equal 28-day windows, past-only training and a review budget of 50 pages. For known clients, the difference in precision between logistic regression and prior CTR was bounded by −2 to 0 percentage points in April and −4 to +2 in May; in June the queues shared 49 of 50 pages and their paired difference was zero. June was a disclosed retrospective rerun after a runtime reset and an earlier source-quality inspection, and 21 outcomes shared by its two primary queues remained unknown. These comparisons do not establish added value from the learned ranking for this task, and do not establish general equivalence, a cause of decline or a benefit from editing pages.</p></div>
+<section><h2>Introduction / problem statement</h2>
+<p>The decision is which 50 eligible pages a strategist reviews first. The target is a defined pattern: clicks fall by at least 15% while impressions remain within ±10% of their earlier level. Finding this pattern is a review aid; it does not explain why a page lost clicks.</p>
+<p>The question is whether a learned ranking adds value beyond inexpensive historical rules. Earlier exploratory versions compared unequal calendar windows and relied on a weak baseline. Their numerical results and page-group counts are superseded here rather than mixed with the corrected evaluation.</p>
+</section>
+<section><h2>Data</h2>
+<p>The source is the gated FlyRank internship warehouse, release v20260703, at dataset revision 50cbf7c3909d07be4d1b5906b4d09e882e5acbf2. The corrected analysis uses fact_content_daily_performance: October 2025–May 2026 partitions provide historical windows, and June 2026 provides the additional outcome window. It does not use the final-month sample, query table, GA4 fields or static content metadata.</p>
+<p>A page is the pair of client and content identifiers; the daily key additionally includes the report date. Identifiers serve only joins, client splits and stable tie ordering. A candidate must have 28 explicitly available prior daily records, positive prior impressions and clicks, and a finite positive impression-weighted position. Missing days are not filled with zero. These eligibility rules exclude zero-prior-click and incomplete-history pages, so findings do not describe those pages.</p>
+<p>An outcome is observed only with 28 valid available later daily records. Otherwise the label is unknown and the page remains in its original review queue. The table reports known-client populations separately by evaluation origin; repeated pages across origins are not independent observations. The positive rate uses observed labels only.</p>
+<div class="table-wrap"><table><thead><tr><th>Outcome month</th><th>Eligible pages</th><th>Clients</th><th>Observed labels</th><th>Positive labels</th><th>Positive rate among observed</th></tr></thead><tbody><tr><td>2026-02</td><td>32,044</td><td>22</td><td>30,237</td><td>1,722</td><td>5.7%</td></tr><tr><td>2026-03</td><td>38,331</td><td>21</td><td>32,180</td><td>2,917</td><td>9.1%</td></tr><tr><td>2026-04</td><td>37,923</td><td>23</td><td>34,201</td><td>2,809</td><td>8.2%</td></tr><tr><td>2026-05</td><td>41,470</td><td>24</td><td>38,116</td><td>2,474</td><td>6.5%</td></tr><tr><td>2026-06</td><td>54,046</td><td>34</td><td>46,096</td><td>2,304</td><td>5.0%</td></tr></tbody></table></div>
+</section>
+<section><h2>Methodology</h2>
+<p>For an evaluation origin t, features cover t−31 through t−4, the next three date labels are unused, and outcomes cover t through t+27. Training uses exactly the three most recent episode origins whose outcome windows finish by t−4. The table gives the resulting dates; March and May cannot use the immediately preceding episode because its labels have not matured.</p>
+<p>The four predictors are prior impressions, prior clicks, CTR (100 × clicks/impressions) and impression-weighted average search position. The positive label satisfies 9 I0 ≤ 10 I1 ≤ 11 I0 and 20 C1 ≤ 17 C0, where I and C are impressions and clicks in the prior (0) and outcome (1) windows. This count-based label is an operational definition, not independently verified content harm.</p>
+<p>Logistic regression uses C=1, at most 1,000 iterations and seed 42. The random forest uses 300 trees, seed 42 and scikit-learn 1.7.2 defaults. Each uses a separate standardization pipeline. The same fixed settings are retained for every supported evaluation; there is no June model search.</p>
+<p>The six rules are the original position-band median-CTR shortfall, prior clicks, prior impressions, prior CTR, and visible position-band pooled-CTR shortfall and excess. All rule references use training features only. Visibility means impressions at least the training median; position bands have boundaries 0, 3, 10, 20, 50 and infinity. Shortfall ranks below-reference CTR; excess ranks above-reference CTR. The original rule remains as a comparator rather than the only rule to beat.</p>
+<p>Evaluations distinguish clients represented in labelled training, naturally unseen clients, and a permanent client-hash holdout excluded from its corresponding training. IDs, outcome-window measurements and product decision scores are not predictors. Candidate selection and rankings precede outcome attachment. The final warehouse does not contain historical ingestion vintages, so the three-day availability buffer remains an assumption.</p>
+<p>The main budget is 50 eligible pages, including unknown outcomes. With h observed positives and u unknown labels, precision lies between h/50 and (h+u)/50. These are logical ranges, not confidence intervals. For paired comparisons, common pages cancel, including common unknown outcomes. If d is the known-positive difference on exclusive pages and uA/uB are their unknown counts, the difference is bounded by (d−uB)/50 and (d+uA)/50. June’s primary comparison is logistic regression minus prior CTR for known clients.</p>
+<p>Other client groups, methods, budgets (25, 100, 200), prior-click thresholds and complete-case ROC AUC/average precision remain available in the aggregate artifacts. Client deletion reranks fixed scores without refitting. The existing count-allocation diagnostic uses future counts and is descriptive; it is neither a forecast nor a false-positive estimate.</p>
+<div class="table-wrap"><table><thead><tr><th>Evaluation origin</th><th>Feature window, 2026</th><th>Outcome window, 2026</th><th>Training episode origins</th></tr></thead><tbody><tr><td>2026-02-01</td><td>Jan 01–Jan 28</td><td>Feb 01–Feb 28</td><td>2025 Nov, Dec; 2026 Jan</td></tr><tr><td>2026-03-01</td><td>Jan 29–Feb 25</td><td>Mar 01–Mar 28</td><td>2025 Nov, Dec; 2026 Jan</td></tr><tr><td>2026-04-01</td><td>Mar 01–Mar 28</td><td>Apr 01–Apr 28</td><td>2026 Jan, Feb, Mar</td></tr><tr><td>2026-05-01</td><td>Mar 31–Apr 27</td><td>May 01–May 28</td><td>2026 Jan, Feb, Mar</td></tr><tr><td>2026-06-01</td><td>May 01–May 28</td><td>Jun 01–Jun 28</td><td>2026 Mar, Apr, May</td></tr></tbody></table></div>
+</section>
+<section><h2>Results</h2>
+<p>The known-client paired comparisons below show no strictly positive lower bound for added logistic-regression precision over prior CTR. April and May were later periods under a protocol fixed after earlier exploration. All periods are retrospective. Ranges concern these fixed queues and do not establish equivalence across portfolios or future periods.</p>
+<div class="table-wrap"><table><thead><tr><th>Outcome month</th><th>Shared top-50 pages</th><th>LR minus prior CTR, logical precision bounds</th></tr></thead><tbody><tr><td>2026-02</td><td>41/50</td><td>-2 to 4 pp</td></tr><tr><td>2026-03</td><td>35/50</td><td>-12 to 0 pp</td></tr><tr><td>2026-04</td><td>44/50</td><td>-2 to 0 pp</td></tr><tr><td>2026-05</td><td>43/50</td><td>-4 to 2 pp</td></tr><tr><td>2026-06</td><td>49/50</td><td>0 to 0 pp</td></tr></tbody></table></div>
+<figure><img src="img/development_summary.png" alt="Earlier chronological evaluation. The archived figure summarizes the February–May known-client queues and paired comparisons. Wider ranges reflect unknown outcomes; they are not statistical confidence intervals."><figcaption>Earlier chronological evaluation. The archived figure summarizes the February–May known-client queues and paired comparisons. Wider ranges reflect unknown outcomes; they are not statistical confidence intervals.</figcaption></figure>
+</section>
+<section><h2>June comparison</h2>
+<p>June’s known-client population contained 54,046 eligible pages from 34 clients; 46,096 had observed labels, including 2,304 positives (5.0% of observed labels). Logistic regression and prior CTR each selected five observed positives and 21 unknown outcomes among 50 reviews. Their shared 49 pages contained all 21 unknowns, while both exclusive pages were observed negatives. Their paired precision difference is therefore zero even though either queue’s absolute precision remains between 10% and 52%.</p>
+<p>The table retains all eight rankings at the same budget. Unknown labels prevent treating observed hits divided by 50 as fully measured precision. These results do not select a new winning method after inspecting June.</p>
+<div class="table-wrap"><table><thead><tr><th>Ranking</th><th>Observed positives / 50</th><th>Unknown / 50</th><th>Precision bounds</th></tr></thead><tbody><tr><td>Baseline rule</td><td>0</td><td>5</td><td>0 to 10%</td></tr><tr><td>Logistic Regression</td><td>5</td><td>21</td><td>10 to 52%</td></tr><tr><td>Random Forest</td><td>1</td><td>23</td><td>2 to 48%</td></tr><tr><td>Prior clicks</td><td>6</td><td>0</td><td>12 to 12%</td></tr><tr><td>Prior impressions</td><td>7</td><td>0</td><td>14 to 14%</td></tr><tr><td>Prior CTR</td><td>5</td><td>21</td><td>10 to 52%</td></tr><tr><td>Visible pooled-CTR shortfall</td><td>0</td><td>8</td><td>0 to 16%</td></tr><tr><td>Visible pooled-CTR excess</td><td>4</td><td>2</td><td>8 to 12%</td></tr></tbody></table></div>
+<figure><img src="img/june_summary.png" alt="June known-client comparison. Left: each line spans the possible precision given unknown labels. Right: common pages cancel when comparing queues; LR and prior CTR have a zero paired difference. The wider secondary LR-minus-CTR-excess range includes zero."><figcaption>June known-client comparison. Left: each line spans the possible precision given unknown labels. Right: common pages cancel when comparing queues; LR and prior CTR have a zero paired difference. The wider secondary LR-minus-CTR-excess range includes zero.</figcaption></figure>
+</section>
+<section><h2>Other client groups and source-quality recovery</h2>
+<p>The June groups below overlap: the hash holdout is a separate training/evaluation design, not an independent sample to pool with the other groups. A small number of clients dominate the two non-primary groups; their detailed results are retained in the June JSON.</p>
+<p>The first June execution stopped because 355 global page groups contained duplicate daily keys (5,680 extra rows). None overlapped its frozen candidate population. That Colab runtime later expired and its private score and source checkpoints were lost. The recovery repeated the same model computation, recorded the prior source inspection before execution, and preserved the unchanged scientific protocol.</p>
+<p>The rerun reproduced the 355 failed global groups. It preserved the global audit and validated June source rows for all and only the May-selected candidates; 55,957 candidate groups had June source rows and none failed the grain/count/coverage checks. It performed no deduplication, removed no candidates and retained absent/incomplete outcomes as unknown. The original prediction bytes and timestamps cannot be recovered or verified. This is additional retrospective validation, with no blind or prospective claim.</p>
+<div class="table-wrap"><table><thead><tr><th>June evaluation group</th><th>Eligible pages</th><th>Clients</th><th>Pages from largest two clients</th></tr></thead><tbody><tr><td>known clients</td><td>54,046</td><td>34</td><td>41.8%</td></tr><tr><td>naturally unseen clients</td><td>1,911</td><td>7</td><td>90.2%</td></tr><tr><td>hash heldout clients</td><td>16,710</td><td>9</td><td>88.3%</td></tr></tbody></table></div>
+</section>
+<section><h2>Limitations and honest framing</h2>
+<p>The target measures a particular count pattern. Small positive prior-click counts can produce large percentage changes. A positive signature does not identify an AI-search effect, a content-quality defect, lost business value or a causal effect of a page edit.</p>
+<p>Eligibility excludes incomplete prior histories and zero prior clicks. Later missingness need not be random: 42% of labels in June’s primary top-50 queues are unknown. Complete-case metrics concern a different evaluation population. Repeated pages, overlapping client designs, few evaluation periods and client concentration limit generalization.</p>
+<p>Model settings and comparisons were developed retrospectively. Earlier June exposure was uncertain, its source defects were inspected before the recovery rerun, and the warehouse provides final values rather than deployment-time data vintages. The evidence supports a limited failure to demonstrate added retrieval value here; it does not show that machine learning never helps this problem.</p>
+</section>
+<section><h2>Ranked recommendations / action playbook</h2>
+<p>The following is a proposed human review process, not an experimentally validated editing policy. The current evidence does not justify choosing the more complex learned ranking over the simple CTR comparator for June’s primary comparison. Private page-level rankings remain in the approved environment; public outputs contain aggregate evidence only.</p>
+<div class="table-wrap"><table><thead><tr><th>Order</th><th>Proposed action</th><th>Reason and limit</th></tr></thead><tbody><tr><td>1</td><td>Use prior CTR as a transparent reference queue; review at most 50 eligible pages.</td><td>Rank by descending prior CTR with stable tie ordering. This is a low-complexity reference, not a proven universal winner.</td></tr><tr><td>2</td><td>Verify measurement and inspect each queued page before deciding an action.</td><td>Check availability and the underlying click/impression pattern. A score alone does not diagnose a cause or justify an edit.</td></tr><tr><td>3</td><td>Record the review decision and monitor remaining eligible pages.</td><td>An unselected page is not certified healthy. Validate any proposed editing benefit separately.</td></tr></tbody></table></div>
+</section>
+<section><h2>Reproducibility</h2>
+<p>The capstone notebook verifies the archived aggregate hashes and regenerates the tables in this paper. It does not refit models or query gated data. The underlying development and June recovery notebooks contain the fitting and warehouse code; their execution records are retained separately. The clean development notebook completed 11 code cells in an existing approved Colab VM using a verified cache, not a fresh independent data collection. The June recovery completed 14 code cells and 13 software tests; its exported artifact hashes were checked locally.</p>
+<p>Pinned versions are NumPy 2.2.6, pandas 2.2.3, SciPy 1.16.3, scikit-learn 1.7.2, Matplotlib 3.10.7, DuckDB 1.4.1 and huggingface_hub 1.0.1. Provider access and private caches are needed to repeat warehouse computation. Credentials, raw page identifiers, private queries and score arrays are excluded from public artifacts. Earlier assignment outputs remain historical and must not be substituted for these corrected results.</p>
+<ul><li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/notebooks/capstone.ipynb">Capstone aggregate-verification notebook</a></li><li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/research/FlyRank_clean_research.ipynb">Development computation notebook</a></li><li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/research/FlyRank_June_recovery.ipynb">June recovery computation notebook</a></li><li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/tree/main/work/research/results/verified_development_v1">Development aggregate results</a></li><li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/tree/main/work/research/results/june_recovery/20261105T181747Z">June aggregate results and recovery disclosure</a></li><li><a href="https://github.com/ridoy1211/Flyrank-Internship-ML/blob/main/work/research/protocols/june_retrospective_v2.json">June protocol</a></li></ul>
+</section>
+<section><h2>Acknowledgments and data credit</h2>
+<p>Built on the FlyRank ML Internship dataset. Ridoy Hasan conducted this internship project with AI-assisted code and editorial support; the methods, results and limitations are documented for review.</p>
+<ul><li><a href="https://flyrank.ai">FlyRank</a></li></ul>
+</section>
+</body></html>

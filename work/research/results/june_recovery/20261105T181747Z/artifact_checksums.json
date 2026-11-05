@@ -1,0 +1,12 @@
+{
+  "protocol.json": "135dd63a8201f1bbdacb17b5c8415e2d583e542957f75dc0fde01d9e83046207",
+  "execution_amendment.json": "398cf7f8aaae8369c88d784472023391ae91504d42664774f6f9f0e157e15ee9",
+  "predictions_frozen_receipt.json": "dd210de2da5b6aa7b9267c12b5f8e2f7a75cf3f4b43733f1aa56dc664a1f0d2f",
+  "june_validation.json": "828b84c5c91577d7bafadfdbb51d3c82af4982320605c92c62b34e12969001ac",
+  "paired_queue_audit.json": "dcfb80a6d3edf6be3536d70c8b69affe1f4d6fc7acdc5869a5efbbb086401482",
+  "count_noise_audit.json": "baab629871a3816e477d32790dd38035c684809418e7d2d3d2fe48ae0c113f8a",
+  "run_manifest.json": "ede3d42fb89585ed6a809acd5472a697c8fa22357a4d93501e900f2ebb92e68c",
+  "june_summary.png": "0d996aaae9de8c35a2204e20009c6ed488b1320a31d8b87eb38e94457944bc31",
+  "june_summary.svg": "351f9c5f22f12a7e3ccfb893f5878ffa8f498a048edf40dbcd1ce8305e108964",
+  "figure_caption.txt": "791dd531c60fe9f637dbd2a710f2fc4363ccd8d1921a8674e868e11104a7b92f"
+}
