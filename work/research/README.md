@@ -23,6 +23,8 @@ The primary precision denominator is the actual as-of review budget, including u
 
 ## Current status
 
+The [full report](../Capstone_Report.md) includes related work, six references, and an explanation of the existing count/support diagnostics. A [concise project brief](../Project_Brief.md) summarizes the decision, evidence and limitations. These reporting additions reuse archived results; they introduce no new model fits or warehouse queries.
+
 June recovery is complete as additional retrospective validation. The original execution stopped on source defects outside its candidates; the expired VM's private checkpoints were lost, so a disclosed rerun used the unchanged settings and protocol. See `JUNE_README.md` and `results/june_recovery/20261105T181747Z/`. It is not a blind or prospective test.
 
 The capstone report, paper page and `work/notebooks/capstone.ipynb` now describe the corrected February–June evidence. The capstone notebook reproduces tables from verified public aggregates; these computation notebooks document the underlying warehouse runs. Publication to GitHub Pages requires the reviewed revision to be committed and deployed together.

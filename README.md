@@ -11,8 +11,11 @@ For known clients, LR-minus-prior-CTR precision bounds were −2 to 0 percentage
 June is a disclosed retrospective rerun after a Colab runtime reset and earlier source-quality inspection. It is not a blind or prospective test. The original June private prediction bytes were lost; the recovery retains model settings and the scientific protocol.
 
 - [Corrected report](work/Capstone_Report.md)
+- [Concise project brief](work/Project_Brief.md)
 - [Development code and verified aggregate results](work/research/README.md)
 - [June recovery and limitations](work/research/JUNE_README.md)
+
+The report now connects its methods to six research references and explains baseline–change dependence, the selected queues' missing outcomes, and the existing count/support diagnostics. These are interpretation and reporting improvements using the archived results. The study evaluates standard methods on this review task; it does not claim an algorithmic innovation or a demonstrated editing benefit.
 
 The capstone notebook reproduces report tables from checksum-verified public aggregates. Provider-approved Colab access is needed to repeat the underlying warehouse computation. Earlier weekly outputs remain historical, and their metrics are superseded by the corrected report.
 
