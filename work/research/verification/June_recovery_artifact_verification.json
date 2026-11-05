@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "all_exported_artifact_hashes_verified": true,
+  "scientific_protocol_unchanged": true,
+  "original_model_implementation_unchanged": true,
+  "runtime_reset_and_prior_inspection_disclosed": true,
+  "candidate_source_quality_guards_passed": true,
+  "no_candidates_removed": true,
+  "recovery_source_sha256": "ca981a0fb289ca996c417ce7ee14568e5b2a19a412ccde07fea18cfb6b9fa3ef"
+}

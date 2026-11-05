@@ -26,6 +26,12 @@ outputs/*.csv
 # --- Intern work area ------------------------------------------------------
 # your experiments live in work/; datasets never enter git
 work/**/*.csv
+work/outputs/fix01_smoke/
+work/outputs/fix05_smoke/
+work/private_cache/
+work/research/results/synthetic/
+work/research/results/synthetic_june/
+work/research/results/synthetic_june_recovery/
 
 # --- Python / notebooks ----------------------------------------------------
 __pycache__/

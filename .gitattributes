@@ -1,0 +1,5 @@
+# Keep checksum-bound text exports consistent across Windows and Linux.
+*.json text eol=lf
+*.svg text eol=lf
+*.txt text eol=lf
+*.png binary

@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "tests_run": 13,
+  "failures": 0,
+  "errors": 0,
+  "warehouse_data_access": false,
+  "runtime_seconds": 26.84,
+  "recovery_source_sha256": "ca981a0fb289ca996c417ce7ee14568e5b2a19a412ccde07fea18cfb6b9fa3ef"
+}

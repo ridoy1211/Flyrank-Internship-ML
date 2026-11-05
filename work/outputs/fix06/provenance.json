@@ -1,0 +1,12 @@
+{
+  "source": "user-executed approved Colab cached-aggregate audit",
+  "received_date": "2026-11-04",
+  "audit_sha256": "4382dff6a22cd79ea11b996d972f7a5b819f7eb0924a4911455927bf589dbe57",
+  "protocol_file_sha256": "2425eb80193a80ea49ace769d175df61926477be512dcd0ffb2426075805a8cb",
+  "protocol_content_sha256": "ddff3ee946539fd8da6d869b5d3752bd8aba708dd22359fd0f3c396b92811291",
+  "rows_checked": 12,
+  "Fix05_population_and_band_accounting": "passed",
+  "implementation_matches_delivered_code": true,
+  "independent_reference_probability_recomputation": false,
+  "independent_warehouse_rerun": false
+}

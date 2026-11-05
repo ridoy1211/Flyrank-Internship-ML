@@ -1,29 +1,26 @@
-# The Great Decoupling: Detecting Silent Click Loss in Search Content
+# Prioritizing pages for click-decline review: learned scores versus simple rules
 
+**Author:** Ridoy Hasan · FlyRank ML Internship
 
+[Read the paper](https://ridoy1211.github.io/Flyrank-Internship-ML/) · [Capstone notebook](work/notebooks/capstone.ipynb)
 
-> Explore the complete methodology, data analysis, modeling approach, 
-> experiments, results, and conclusions.
+This project asks whether fixed learned scores improve a 50-page review queue over simple historical ranking rules for a later click-decline pattern. The corrected analysis uses equal 28-day windows, past-only training and explicit unknown-outcome accounting.
 
-**[Read the Full Paper →](https://ridoy1211.github.io/Flyrank-Internship-ML)**
+For known clients, LR-minus-prior-CTR precision bounds were −2 to 0 percentage points in April and −4 to +2 in May. June’s queues shared 49 of 50 pages and had a paired difference of zero; 21 shared outcomes remained unknown. Added learned-ranking value is not established in these comparisons.
 
-A machine learning capstone built on FlyRank's 79-million-row production search warehouse,
-investigating whether pages that hold steady search visibility while quietly losing clicks
-can be flagged early enough for a content strategist to act on.
+June is a disclosed retrospective rerun after a Colab runtime reset and earlier source-quality inspection. It is not a blind or prospective test. The original June private prediction bytes were lost; the recovery retains model settings and the scientific protocol.
 
-- **Result:** a Random Forest classifier achieves a 1.93x lift over a transparent baseline
-  and the base rate, on a client-grouped holdout split.
-- **Author:** Ridoy Hasan — [LinkedIn](https://www.linkedin.com/in/ridoy-hasan7/)
+- [Corrected report](work/Capstone_Report.md)
+- [Development code and verified aggregate results](work/research/README.md)
+- [June recovery and limitations](work/research/JUNE_README.md)
 
-Full methodology, validation, and limitations are in the deployed paper above. The notebooks
-behind every step are in `work/notebooks/`, in weekly order (research framing → data contract
-→ baseline → model → validation audit → action playbook → capstone).
+The capstone notebook reproduces report tables from checksum-verified public aggregates. Provider-approved Colab access is needed to repeat the underlying warehouse computation. Earlier weekly outputs remain historical, and their metrics are superseded by the corrected report.
+
+Built on the [FlyRank ML Internship dataset](https://flyrank.ai).
 
 ---
 
-*This repository was built as part of the FlyRank ML Internship. The internship's own setup
-documentation is preserved below for reproducibility.*
-
+The original internship setup documentation follows; its starter-sample results are separate teaching examples.
 
 # FlyRank ML Internship — Starter Repo
 

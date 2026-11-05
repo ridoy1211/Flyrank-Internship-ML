@@ -1,0 +1,111 @@
+{
+  "protocol": {
+    "version": "june-retrospective-addendum-v2",
+    "supersedes_protocol_sha256": "e7ca6f3ffae8f8fddfa7536a4c68214ea3404c4528e7c1e3df887e3bcd9ec202",
+    "amendment_before_June_access": "Explicitly state paired estimand direction, primary prior-click support and training-label cutoff; no scientific settings changed.",
+    "status": "protocol_prepared_before_this_workflow_accesses_June_not_preregistration",
+    "parent_forecast_protocol_sha256": "fa08ab634857e99ecdd9b194c93105795258b31ddaed49454c55f2d8a478e0a8",
+    "prior_exposure": {
+      "user_answer": "I am not sure",
+      "status": "uncertain",
+      "consequence": "Additional retrospective validation; no blind, untouched or prospective test claim."
+    },
+    "question": "Does fixed logistic-regression ranking add top-50 retrieval value beyond prior CTR in an additional later period?",
+    "origin": "2026-06-01",
+    "feature_start": "2026-05-01",
+    "feature_end": "2026-05-28",
+    "gap_dates": [
+      "2026-05-29",
+      "2026-05-30",
+      "2026-05-31"
+    ],
+    "outcome_start": "2026-06-01",
+    "outcome_end": "2026-06-28",
+    "training_origins": [
+      "2026-03-01",
+      "2026-04-01",
+      "2026-05-01"
+    ],
+    "training_label_end_cutoff": "2026-05-28",
+    "feature_reuse": "Reuse the UNFILTERED May outcome-window aggregate from the verified private cache, relabeling origin and role. Never reuse a filtered May evaluation cohort as June eligibility.",
+    "source_revision": "50cbf7c3909d07be4d1b5906b4d09e882e5acbf2",
+    "new_source_scope": "Only fact_content_daily_performance/month=2026-06; never the sample table. Aggregate June 1-28. Reuse existing March-May episode data for training.",
+    "eligibility_and_label": "Identical to parent protocol: rank all as-of eligible pages before observing outcomes; retain unknown June outcomes.",
+    "methods": [
+      "Baseline rule",
+      "Logistic Regression",
+      "Random Forest",
+      "Prior clicks",
+      "Prior impressions",
+      "Prior CTR",
+      "Visible pooled-CTR shortfall",
+      "Visible pooled-CTR excess"
+    ],
+    "features": [
+      "impressions_prior28",
+      "clicks_prior28",
+      "ctr_prior28",
+      "avg_position_prior28"
+    ],
+    "models": {
+      "LR": {
+        "C": 1.0,
+        "max_iter": 1000,
+        "seed": 42
+      },
+      "RF": {
+        "n_estimators": 300,
+        "seed": 42,
+        "n_jobs": -1,
+        "other_parameters": "sklearn 1.7.2 defaults"
+      },
+      "preprocessing": "Independent StandardScaler per model, four numeric features only; no tuning or winner selection."
+    },
+    "rules": "Training-only position bands (0,3,10,20,50,infinity); medians or pooled CTR; visibility at training median I. High prior counts/CTR rank first.",
+    "arms": [
+      "known_clients",
+      "naturally_unseen_clients",
+      "hash_heldout_clients"
+    ],
+    "arm_definition": "Identical rolling-training membership and permanent hash exclusion as parent; report each arm separately.",
+    "primary_arm": "known_clients",
+    "primary_budget": 50,
+    "primary_minimum_prior_clicks": 1,
+    "primary_comparison": [
+      "Logistic Regression",
+      "Prior CTR"
+    ],
+    "primary_estimand": "Delta = precision@50(Logistic Regression) minus precision@50(Prior CTR), for queues ranked from the same known-client as-of candidate frame. Positive Delta favors LR.",
+    "paired_bounds": "For A=LR and B=comparator, shared pages including unknown labels cancel. Let d=observed positives in A-only minus B-only, uA=unknown outcomes in A-only and uB=unknown outcomes in B-only. Delta is bounded by (d-uB)/50 and (d+uA)/50. These logical bounds allow binary labels for exclusive unknowns and are not confidence intervals.",
+    "secondary_comparison": [
+      "Logistic Regression",
+      "Visible pooled-CTR excess"
+    ],
+    "secondary_estimand": "The same signed paired precision@50 difference, substituting visible pooled-CTR excess for B.",
+    "secondary_budgets": [
+      25,
+      100,
+      200
+    ],
+    "secondary_minimum_prior_clicks": [
+      5,
+      20
+    ],
+    "reporting": "All eight methods and all three arms, cohort flow, coverage, observed hits, unknown counts and logical queue bounds. Paired missing-label bounds are primary for the specified comparison. Complete-case AUC/AP/ranking metrics are secondary.",
+    "unsupported_arms": "Report the exact support/status reason. Do not shorten history or alter support thresholds.",
+    "no_tuning": "No changes to labels, eligibility, features, methods, thresholds or tie order after June access. Corrections require a dated versioned amendment and disclosure.",
+    "diagnostics": "Count-allocation and client-deletion analyses remain descriptive and secondary; never used to select a model or revise labels.",
+    "limits": [
+      "Retrospective final data release without historical ingestion vintages.",
+      "Unknown prior June exposure and post-development comparator selection.",
+      "Repeated pages/clients and only one additional period; no iid confidence intervals.",
+      "Logical missing-label bounds are not confidence intervals.",
+      "Retrieval of the count signature does not establish business benefit from editing a page."
+    ],
+    "execution_state": "not_executed_by_this_workflow",
+    "implementation_requirement": "A separate June runner must first pass date, unfiltered-feature reuse, outcome-missingness, hash exclusion and source-scope tests. The development notebook continues to exclude June."
+  },
+  "protocol_sha256": "cfbee182ac361efe2b932d9131f18c62dcb2694e3038a2ff4234df018ecf4c07",
+  "created_utc": "2026-11-04T07:54:23.135789+00:00",
+  "june_access_during_preparation": false
+}

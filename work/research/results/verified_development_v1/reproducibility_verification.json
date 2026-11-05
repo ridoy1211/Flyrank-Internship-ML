@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "notebook_code_cells_executed": 11,
+  "execution_context": "isolated Python namespace in existing approved Colab VM with pinned installed libraries and verified private cache",
+  "fresh_independent_session": false,
+  "warehouse_query": false,
+  "june_read": false,
+  "forecast_protocol_cohorts_all_metrics_and_non_RF_prediction_hashes_match": true,
+  "RF_raw_prediction_byte_hash_differences": [],
+  "RF_published_metrics_match": true,
+  "count_reference_rows_reproduced_exactly": 12,
+  "paired_comparisons_reproduced_exactly": 8,
+  "client_deletion_cases_reproduced_exactly": 180,
+  "implementation_sha256": "b8f92f0439c3d0b53e984a59cde640735a17aaca78bdbc02f20828e6ac18c71d",
+  "output_file_sha256": {
+    "chronological_validation.json": "1e707a3055a2c2c3a49b0960fe74aa4e957192e6c212d50ae7fec8504f7c90c1",
+    "count_noise_audit.json": "ab75c32c46b44062217c27aa78b4e144aadd5d5317dfbe8751761935e4a692b7",
+    "development_summary.png": "c4247dd0f3bb01d83b108ec2bffdbd89113d576516578b9b7c6ecbaf82fc7bd5",
+    "development_summary.svg": "7e617c069be183f213030d032e7290c5984125d4c4c1b5b1323ce19c7623875e",
+    "figure_caption.txt": "8580da4dfd03257b60b82d1e0e84923acbb794db61833468e37794b0e27050c7",
+    "paired_queue_audit.json": "93c6fb3564db69f6a1b8b7c61aef53892231a1839d5e538338d5b150499f6496",
+    "protocol.json": "776d4065c4d0b12d7f6bc293d75a726c6d62537da0f80657fded79cd83485ad6",
+    "run_manifest.json": "f472f9ad772e0a1bc0465baa794c7a36fcfe28c43d9f38a636d75a82fc97f0e2"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "implementation_sha256": "67138ce3d592eb3ff6244be129ad40c2a98669d95b6b69ceb54d1c06f2a828e4",
+  "integrity_check": {
+    "version": "fix05-audit-inputs-v1",
+    "expected_sha256": "71ac0f073a6fa994a6f2a6bfbb43a033d15463250de24f120c48a4c44b3e8ba1",
+    "current_sha256": "71ac0f073a6fa994a6f2a6bfbb43a033d15463250de24f120c48a4c44b3e8ba1",
+    "excluded_fields": [
+      "folds/*/arms/*/prediction_sha256/Random Forest (raw byte checksum only; all RF metrics retained)",
+      "execution/memory_settings/available_memory_bytes_at_configuration (resource telemetry only)"
+    ],
+    "all_other_fields_including_RF_metrics_and_LR_CTR_prediction_hashes_checked": true
+  },
+  "reason": "Unrelated RF raw-byte checksum changed while all published results and required predictions matched."
+}

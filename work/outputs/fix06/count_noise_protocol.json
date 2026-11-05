@@ -1,0 +1,27 @@
+{
+  "protocol": {
+    "version": "fix06-v1",
+    "status": "exploratory_reference_audit_after_Fix05_review",
+    "purpose": "Describe raw event counts against a simple stationary click-allocation reference.",
+    "source": "Existing Fix05 page-episode aggregates and unchanged cohorts; no new warehouse query or model fit.",
+    "population": "Complete-case members of each fixed Fix05 arm, restricted to 1<=prior+future clicks<=200.",
+    "cap_reason": "Predeclared computational scope for the low-total-count diagnostic; total clicks are conditioned on by the reference.",
+    "null": "Independent Bernoulli clicks per impression with one common page CTR in the two windows.",
+    "conditioning": "Both impression totals, the combined click total, and prior clicks>0.",
+    "reference": "Future clicks X ~ Hypergeometric(M=I0+I1,n=C0+C1,N=I1), truncated to X<=C0+C1-1.",
+    "signature_probability": "If stable impressions, F(floor(17*(C0+C1)/37))/F(C0+C1-1); otherwise 0.",
+    "computation": "Finite-support hypergeometric weights from log-ratio recurrence; batches of at most 4096 rows.",
+    "reporting": "Observed signatures beside sum of conditional probabilities on exactly the same modeled subset.",
+    "prior_click_bands": "Observed counts only. No reference expectation is reported by observed prior-click band.",
+    "not_forecast": "Reference uses future impressions and clicks. It is outcome analysis, never a predictor or ranking baseline.",
+    "limitations": [
+      "The common-CTR independent-click model may fail under temporal dependence, changing query mix, seasonality or heterogeneous exposure.",
+      "Complete-case retention must be ignorable under this conditional reference; outcome-dependent observation can invalidate it.",
+      "Other eligibility/arm membership is treated as fixed under the reference.",
+      "Total-click restriction uses future counts and does not redefine the main prediction population.",
+      "No false-positive fraction, equivalence, calibrated hypothesis test, confidence interval or causal attribution follows.",
+      "Arms overlap and monthly pages/clients repeat; do not pool them as independent evidence."
+    ]
+  },
+  "implementation_sha256": "13f51cc6f3dd8edec9f44fdf8a50b2498f0006ea0cf93a849cb2f9dea04c66d5"
+}

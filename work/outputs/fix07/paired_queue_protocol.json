@@ -1,0 +1,39 @@
+{
+  "protocol": {
+    "version": "fix07-v1",
+    "status": "exploratory_paired_diagnostic_after_Fix06_review",
+    "population": "Unchanged Fix05 known-client as-of eligible frames; no total-click cap or future-outcome filtering.",
+    "origins": [
+      "2026-02-01",
+      "2026-03-01",
+      "2026-04-01",
+      "2026-05-01"
+    ],
+    "budget": 50,
+    "pairs": [
+      [
+        "Logistic Regression",
+        "Prior CTR"
+      ],
+      [
+        "Logistic Regression",
+        "Visible pooled-CTR excess"
+      ]
+    ],
+    "replay": "Four fits of unchanged LR settings recover the original predictions. Require exact prediction hashes for LR, prior CTR and pooled CTR excess.",
+    "models": "No new candidate, tuning or Random-Forest fit. All eight original Fix05 results remain retained.",
+    "tie_policy": "Stable descending scores in original canonical client/content order.",
+    "pair_bound": "Let d be known-positive A-only minus B-only. Bounds on P50(A)-P50(B) are (d-unknown_B_only)/50 and (d+unknown_A_only)/50.",
+    "overlap": "Shared pages, including shared unknown outcomes, cancel exactly in a paired difference.",
+    "client_influence": "Delete each eligible client once, rerank fixed predictions on remaining pages at the same K. Do not refit after deletion.",
+    "limitations": [
+      "Missing-data bounds apply to these finite queues under the frozen tie policy; they are not confidence intervals.",
+      "Client deletion measures evaluation-portfolio sensitivity, not uncertainty of training or unseen-client model performance.",
+      "Repeated clients/pages and only two later periods limit generalization. No iid tests or bootstrap confidence intervals.",
+      "Diagnostic comparisons are exploratory, not a new blind confirmation or a change of the primary prediction task.",
+      "Counterfactual missing labels may have additional unmodeled constraints; reported bounds allow any binary labels for exclusive unknowns.",
+      "No warehouse query or June access."
+    ]
+  },
+  "implementation_sha256": "67138ce3d592eb3ff6244be129ad40c2a98669d95b6b69ceb54d1c06f2a828e4"
+}

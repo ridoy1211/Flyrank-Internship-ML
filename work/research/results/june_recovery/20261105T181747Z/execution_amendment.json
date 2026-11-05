@@ -1,0 +1,19 @@
+{
+  "version": "June-runtime-reset-rerun-v1",
+  "created_utc": "2026-11-05T18:17:47.128086+00:00",
+  "reason": "The previous Colab runtime expired; its private predictions and source aggregate were lost.",
+  "previous_June_source_inspection": {
+    "duplicate_daily_key_groups": 355,
+    "extra_daily_rows": 5680,
+    "failed_groups_in_frozen_candidate_population": 0,
+    "ranking_performance_inspected": false
+  },
+  "original_implementation_sha256": "39b0eccfc593ef6970e19ec3519fd6dad70e03bf9fae96b092542d0a5db4d984",
+  "recovery_implementation_sha256": "ca981a0fb289ca996c417ce7ee14568e5b2a19a412ccde07fea18cfb6b9fa3ef",
+  "protocol_sha256": "cfbee182ac361efe2b932d9131f18c62dcb2694e3038a2ff4234df018ecf4c07",
+  "scientific_protocol_or_threshold_changes": false,
+  "new_model_search_or_tuning": false,
+  "source_scope": "All and only May-derived candidate keys, determined before outcome attachment.",
+  "data_deduplication_performed": false,
+  "interpretation": "Retrospective rerun after known June source-quality inspection; original prediction bytes/timestamps cannot be recovered or verified."
+}

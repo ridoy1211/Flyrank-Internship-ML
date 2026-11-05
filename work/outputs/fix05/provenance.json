@@ -1,0 +1,13 @@
+{
+  "source": "user-executed approved Colab aggregate export",
+  "received_date": "2026-11-04",
+  "results_sha256": "4baf8a9041acfce037acb2ffbc1ea2d112903c37757fa456d3bb62112223c528",
+  "protocol_file_sha256": "7026cce081a60313925134c3214d36ec26d3a8282742e5e2ef737c4eaa758b08",
+  "protocol_content_sha256": "fa08ab634857e99ecdd9b194c93105795258b31ddaed49454c55f2d8a478e0a8",
+  "approved_memory_recovery_implementation": true,
+  "metric_records_checked": 288,
+  "budget_records_checked": 1152,
+  "checks": "protocol, timing, cohort accounting, queue bounds, conditional metrics, client contributions, reference curves",
+  "independent_warehouse_rerun": false,
+  "raw_prediction_or_label_recomputation": false
+}
