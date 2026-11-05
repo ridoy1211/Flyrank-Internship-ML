@@ -85,7 +85,7 @@ class SelectionChecks(unittest.TestCase):
             m.compare_models(bad,n_trees=8)
 
     def test_embedded_notebook_logic_matches_tested_module(self):
-        nb=json.loads((BASE/'work/notebooks/fix01_model_comparison.ipynb').read_text(encoding='utf-8'))
+        nb=json.loads((BASE/'work/research/archive/fix01_model_comparison.ipynb').read_text(encoding='utf-8'))
         source=''.join(nb['cells'][2]['source'])
         self.assertEqual(source,m.__doc__ and (BASE/'work/model_comparison.py').read_text(encoding='utf-8'))
 

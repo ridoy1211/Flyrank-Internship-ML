@@ -74,7 +74,7 @@ class MeasurementChecks(unittest.TestCase):
                              pd.Series([2.5]),pd.Series([True]))
 
     def test_notebook_sources_compile_and_embed_current_measurement(self):
-        nb=json.loads((ROOT/'work/notebooks/fix02_equal_windows.ipynb').read_text(encoding='utf-8'))
+        nb=json.loads((ROOT/'work/research/archive/fix02_equal_windows.ipynb').read_text(encoding='utf-8'))
         for i,c in enumerate(nb['cells']):
             if c['cell_type']=='code':compile(''.join(c['source']),f'cell{i}','exec')
         self.assertEqual(''.join(nb['cells'][2]['source']),

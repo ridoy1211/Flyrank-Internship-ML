@@ -62,18 +62,23 @@ jobs:
           import json, glob, sys
           url = ""
           try:
-              url = open("submission/paper_url.txt").readline().strip()
+              with open("submission/paper_url.txt", encoding="utf-8") as f:
+                  url = f.readline().strip()
           except Exception:
               pass
           final = url.startswith("https://")
           bad = []
           for p in sorted(glob.glob("work/notebooks/*.ipynb")):
               try:
-                  nb = json.load(open(p))
+                  with open(p, encoding="utf-8") as f:
+                      nb = json.load(f)
               except Exception:
                   continue
               code = [c for c in nb.get("cells", []) if c.get("cell_type") == "code"]
-              src = sum(len("".join(c.get("source", []))) for c in code)
+              # Comment-only starter cells are unfilled templates, not missing runs.
+              src = sum(len(line.strip()) for c in code
+                        for line in "".join(c.get("source", [])).splitlines()
+                        if line.strip() and not line.lstrip().startswith("#"))
               has_out = any(c.get("outputs") for c in code)
               if code and src > 200 and not has_out:
                   kind = "error" if final else "warning"
