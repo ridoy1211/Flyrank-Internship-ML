@@ -171,4 +171,8 @@ build on — and the `skills/` folder here is the instruction library for your A
 
 ---
 
-*Track leads: Mirza Ašćerić (ML) · Hole (data engineering). Code under MIT (see `LICENSE`); data under `DATA_USE.md`.*
+*Track leads: Mirza Ašćerić (ML) · Hole (data engineering).
+
+## License
+Code is licensed under the [MIT License](LICENSE).
+Dataset use is governed separately by [DATA_USE.md](DATA_USE.md).
