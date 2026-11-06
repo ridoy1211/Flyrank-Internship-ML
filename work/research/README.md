@@ -23,7 +23,7 @@ The primary precision denominator is the actual as-of review budget, including u
 
 ## Current status
 
-The [full report](../Capstone_Report.md) includes related work, six references, and an explanation of the existing count/support diagnostics. A [concise project brief](../Project_Brief.md) summarizes the decision, evidence and limitations. These reporting additions reuse archived results; they introduce no new model fits or warehouse queries.
+The [full report](../Capstone_Report.md) includes four narrowly scoped methodological citations, two optional further-reading resources, and an explanation of the existing count/support diagnostics. A [concise project brief](../Project_Brief.md) summarizes the decision, evidence and limitations. References were added during the write-up after the analysis; these reporting additions reuse archived results and introduce no new model fits or warehouse queries.
 
 June recovery is complete as additional retrospective validation. The original execution stopped on source defects outside its candidates; the expired VM's private checkpoints were lost, so a disclosed rerun used the unchanged settings and protocol. See `JUNE_README.md` and `results/june_recovery/20261105T181747Z/`. It is not a blind or prospective test.
 

@@ -3,7 +3,8 @@
   "updated": "6 November 2026",
   "notebook_code_cells_executed": 5,
   "notebook_markdown_matches_report": true,
-  "references": 6,
+  "references": 4,
+  "optional_further_reading": 2,
   "reference_anchors_valid": true,
   "html_tables": 7,
   "figure_paths_verified": true,
@@ -22,11 +23,11 @@
   "github_push": false,
   "deployed": false,
   "updated_deliverables": {
-    "README.md": "6108c9fde02c7ac0313d545ef2cfad1ae314fd5045cde248862f20cd9492159c",
-    "docs/index.html": "9aebb8173b7b6807f591d9aa175d56a20b28844699656349b4c7792d9ef4d40f",
-    "work/Capstone_Report.md": "7794fc72b1fb88602d88a723a90196ae103dcf23b640722e038cedf137b9e68e",
-    "work/Project_Brief.md": "24e612b85da8b8b4fcfea4a07b3a35d7b43382401e1cf31546956ca13b24d054",
-    "work/notebooks/capstone.ipynb": "03d3a3b082dca4d215e2f0775a874ffd0e22179fc684643e2f1ef5ef77e5ae99",
-    "work/research/README.md": "79462d20a3a5c8ce3b92698988b71e15d62eddbb458b0eca52c92853677c6b68"
+    "README.md": "2a450017eb8d3014ce010aa17bd34ab6311f6eeff4b8e69ead8f1c88de450f3c",
+    "docs/index.html": "0902852f410784e7a1bfffc145d8eff73829ad718efe976787160f9f8e49636e",
+    "work/Capstone_Report.md": "99a9e5a86ec58d3a9ed63e5798cead72602aae5014035a63e9c0df583671b5a0",
+    "work/Project_Brief.md": "02d3fc18e56afb98fd57cd364a336d4166419722f40b6d095b2ab0c15e9b6694",
+    "work/notebooks/capstone.ipynb": "511a69e3a4fbb81f10520b0c8bb0089966888a63e767afb17bcc82e82bd3ab0b",
+    "work/research/README.md": "09fde34cc4f2a1ff47d70c1261ce095ff5aee58508ecb3387b6f9f37c9e169b5"
   }
 }
