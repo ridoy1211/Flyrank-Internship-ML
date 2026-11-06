@@ -10,7 +10,7 @@ For known clients, LR-minus-prior-CTR precision bounds were −2 to 0 percentage
 
 June is a disclosed retrospective rerun after a Colab runtime reset and earlier source-quality inspection. It is not a blind or prospective test. The original June private prediction bytes were lost; the recovery retains model settings and the scientific protocol.
 
-- [Corrected report](work/Capstone_Report.md)
+- [Project report](work/Capstone_Report.md)
 - [Concise project brief](work/Project_Brief.md)
 - [Development code and verified aggregate results](work/research/README.md)
 - [June recovery and limitations](work/research/JUNE_README.md)
